@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Privacy policy | Royal Cream Dairy{% endblock %}
+{% block description %}How Royal Cream Dairy collects, uses and protects your personal information when you order online.{% endblock %}
+{% block content %}
+<main class="wrap page narrow prose">
+  <h1>Privacy policy</h1>
+  <p class="muted">Last updated: 3 November 2026. We aim to handle your information in line with Kenya's Data Protection Act, 2019.</p>
+
+  <h2>Who we are</h2>
+  <p>Royal Cream Dairy, in Chuka, Kenya, sells dairy products for delivery. We decide how the personal information described below is used.</p>
+
+  <h2>What we collect</h2>
+  <p>When you place an order we collect your name, phone number, delivery area, specific address or landmark, any delivery instructions you add, and the items you order. If you choose WhatsApp updates we also record that you agreed, and when. Our servers keep routine technical logs, including your IP address, to keep the site secure and to limit abuse.</p>
+
+  <h2>Why we use it</h2>
+  <p>We use your information only to take, confirm, prepare and deliver your order, to contact you about that order, and to keep records of our sales. We do not use it for marketing and we do not sell it.</p>
+
+  <h2>WhatsApp updates</h2>
+  <p>On the checkout page you can choose to receive updates about your order on WhatsApp. This is optional and separate from placing the order, and it is used only for messages about that order. If you do not tick the box, we will not send you automated WhatsApp messages.</p>
+
+  <h2>Who we share it with</h2>
+  <p>We share information only with the services we need to run the shop: our web hosting provider, and Meta (WhatsApp) if you chose WhatsApp updates. Our team uses your details to prepare and deliver your order. These providers may process information outside Kenya.</p>
+
+  <h2>Cookies and browser storage</h2>
+  <p>Your cart is kept in your own browser. Forms use a security cookie, and staff sign-in uses a session cookie.{% if GA_ID %} We also use Google Analytics to count visits and see which pages and products are popular. We do not send your name, phone number or address to Google Analytics, we switch off advertising personalisation, and we do not run analytics for browsers that send a Do Not Track or Global Privacy Control signal.{% endif %}</p>
+
+  <h2>How long we keep it</h2>
+  <p>We keep your name, phone number and address for {{ retention_months }} months after your last order, and then remove them. We keep order totals and product details without your personal information for our business records. Some records may need to be kept longer where the law requires it.</p>
+
+  <h2>Your rights</h2>
+  <p>You can ask to see the information we hold about you, to have it corrected, or to have it deleted. We will delete or anonymise it unless we must keep it for a legal reason or you have an order in progress.{% if contact_email %} Contact us at <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.{% endif %}</p>
+
+  <h2>Keeping your information safe</h2>
+  <p>The site uses HTTPS, staff access is limited by role, and we collect only what is needed to deliver your order.</p>
+
+  <h2>Complaints</h2>
+  <p>If you are not happy with how we handle your information, please tell us first. You can also complain to the Office of the Data Protection Commissioner of Kenya.</p>
+
+  <h2>Changes</h2>
+  <p>If we change this policy we will update the date above.</p>
+</main>
+{% endblock %}

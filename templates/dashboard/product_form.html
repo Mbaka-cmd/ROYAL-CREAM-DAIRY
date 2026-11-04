@@ -1,0 +1,37 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{% if product %}Edit {{ product.name }}{% else %}New product{% endif %}{% endblock %}
+{% block content %}
+<p><a href="{% url 'owner_products' %}">&larr; All products</a></p>
+<h1>{% if product %}Edit product{% else %}New product{% endif %}</h1>
+{% if save_error %}<p class="notice error" role="alert">{{ save_error }}</p>{% endif %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <section class="panel">
+    <h2>Product</h2>
+    {% include "dashboard/_form_fields.html" with form=form %}
+  </section>
+
+  <section class="panel">
+    <h2>Sizes and prices</h2>
+    <p class="muted small">Each size is a separate sellable item. Sizes cannot be deleted (past orders keep them); switch one off instead. Receive stock on the Stock page to make a new size orderable.</p>
+    {{ formset.management_form }}
+    {% if formset.non_form_errors %}<p class="notice error" role="alert">{{ formset.non_form_errors|join:" " }}</p>{% endif %}
+    <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Size / name</th><th>Price (KSh)</th><th>Unit</th><th>Active</th></tr></thead>
+      <tbody>
+      {% for f in formset %}
+      <tr>
+        <td>{% for h in f.hidden_fields %}{{ h }}{% endfor %}{{ f.name }}{% if f.name.errors %}<p class="warn">{{ f.name.errors|join:" " }}</p>{% endif %}{% if f.non_field_errors %}<p class="warn">{{ f.non_field_errors|join:" " }}</p>{% endif %}</td>
+        <td>{{ f.price }}{% if f.price.errors %}<p class="warn">{{ f.price.errors|join:" " }}</p>{% endif %}</td>
+        <td>{{ f.unit }}</td>
+        <td>{{ f.is_active }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </section>
+  <button class="btn" type="submit">Save product</button>
+</form>
+{% endblock %}

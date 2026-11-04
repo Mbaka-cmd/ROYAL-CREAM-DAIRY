@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Page not found | Royal Cream Dairy{% endblock %}
+{% block head_extra %}<meta name="robots" content="noindex">{% endblock %}
+{% block content %}
+<main class="wrap page narrow">
+  <h1>Page not found</h1>
+  <p>We could not find that page.</p>
+  <p><a class="btn" href="{% url 'product_list' %}">Browse products</a></p>
+</main>
+{% endblock %}

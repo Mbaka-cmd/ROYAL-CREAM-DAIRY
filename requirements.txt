@@ -1,0 +1,6 @@
+Django>=5.2,<5.3
+psycopg[binary]
+requests
+Pillow
+python-dotenv
+django-ratelimitwhitenoise>=6.9,<7

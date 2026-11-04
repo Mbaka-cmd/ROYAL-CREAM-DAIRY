@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Checkout | Royal Cream Dairy{% endblock %}
+{% block head_extra %}<meta name="robots" content="noindex">{% endblock %}
+{% block content %}
+<main class="wrap page" id="checkout-root" data-validate-url="{% url 'cart_validate' %}">
+  <h1>Your order</h1>
+  <noscript><p class="notice">Please enable JavaScript to use the cart and place an order.</p></noscript>
+  {% if error %}<p class="notice error" role="alert">{{ error }}</p>{% endif %}
+
+  <div class="checkout-grid">
+    <section class="panel" aria-labelledby="cart-h">
+      <h2 id="cart-h">Cart</h2>
+      <div id="cart-empty" hidden>
+        <p>Your cart is empty.</p>
+        <a class="btn" href="{% url 'product_list' %}">Browse products</a>
+      </div>
+      <div id="cart-lines"></div>
+      <p id="cart-message" class="warn" role="status"></p>
+      <dl id="cart-totals" class="totals"></dl>
+    </section>
+
+    <form id="checkout-form" class="panel" method="post" action="{% url 'checkout' %}">
+      {% csrf_token %}
+      <input type="hidden" name="cart" value="[]">
+      <input type="hidden" name="idempotency_key" value="">
+      <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <h2>Delivery details</h2>
+      <label for="f-name">Your name</label>
+      <input id="f-name" name="name" type="text" required minlength="2" maxlength="150" autocomplete="name" value="{{ form.name }}">
+
+      <label for="f-phone">Phone number</label>
+      <input id="f-phone" name="phone" type="tel" inputmode="tel" required maxlength="20" autocomplete="tel" placeholder="07XX XXX XXX" value="{{ form.phone }}">
+
+      <label for="f-area">Delivery area</label>
+      <input id="f-area" name="delivery_area" type="text" required maxlength="100" placeholder="Your area or estate" value="{{ form.delivery_area }}">
+
+      <label for="f-address">Specific address or landmark</label>
+      <input id="f-address" name="delivery_address" type="text" required minlength="3" maxlength="255" value="{{ form.delivery_address }}">
+
+      <label for="f-notes">Delivery instructions (optional)</label>
+      <textarea id="f-notes" name="delivery_instructions" maxlength="255" rows="2">{{ form.delivery_instructions }}</textarea>
+
+      <p class="payment"><strong>Payment:</strong> Pay on delivery</p>
+
+      <label class="check">
+        <input type="checkbox" name="whatsapp_consent" value="on" {% if form.whatsapp_consent %}checked{% endif %}>
+        <span>Send me updates about this order on WhatsApp. (Optional. Used only for this order.)</span>
+      </label>
+      <p class="muted small">We use your name, phone number and address only to process and deliver your order. <a href="{% url 'privacy' %}">Privacy policy</a></p>
+
+      <button id="place-order" class="btn btn-block" type="submit" disabled>Place order</button>
+    </form>
+  </div>
+</main>
+{% endblock %}
+{% block scripts %}{% load static %}<script src="{% static 'js/checkout.js' %}" defer></script>{% endblock %}

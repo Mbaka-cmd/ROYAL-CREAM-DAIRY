@@ -1,0 +1,43 @@
+{% extends "dashboard/base.html" %}
+{% block title %}WhatsApp messages{% endblock %}
+{% block content %}
+<h1>WhatsApp messages</h1>
+<nav class="filters" aria-label="Filter">
+  <a href="{% url 'owner_notifications' %}" class="chip{% if not active_status %} active{% endif %}">All</a>
+  <a href="?status=review" class="chip{% if active_status == 'review' %} active{% endif %}">Need review</a>
+  <a href="?status=pending" class="chip{% if active_status == 'pending' %} active{% endif %}">Waiting to send</a>
+  <a href="?status=sent" class="chip{% if active_status == 'sent' %} active{% endif %}">Sent</a>
+</nav>
+
+<div class="table-wrap">
+<table class="tbl">
+  <thead><tr><th>When</th><th>Order</th><th>To</th><th>Message</th><th>Status</th><th class="num">Tries</th><th>Last error</th><th></th></tr></thead>
+  <tbody>
+  {% for n in page.object_list %}
+  <tr>
+    <td>{{ n.created_at|date:"d M H:i" }}</td>
+    <td>{% if perms.orders.view_order %}<a href="{% url 'owner_order_detail' n.order_id %}">{{ n.order.reference }}</a>{% else %}{{ n.order.reference }}{% endif %}</td>
+    <td>{{ n.get_recipient_type_display }}</td>
+    <td>{{ n.get_event_display }}</td>
+    <td><span class="st st-{{ n.status|lower }}">{{ n.get_status_display }}</span></td>
+    <td class="num">{{ n.attempts }}</td>
+    <td class="small">{{ n.last_error }}</td>
+    <td>{% if n.status in retryable and perms.notifications.change_notification %}
+      <form method="post" action="{% url 'owner_notification_retry' n.pk %}">{% csrf_token %}<button class="btn btn-small" type="submit">Retry</button></form>
+    {% endif %}</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="8" class="muted">Nothing to show.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% if page.paginator.num_pages > 1 %}
+<nav class="pager" aria-label="Pages">
+  {% if page.has_previous %}<a class="btn btn-outline btn-small" href="?{{ filter_qs }}{% if filter_qs %}&amp;{% endif %}page={{ page.previous_page_number }}">Previous</a>{% endif %}
+  <span class="muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a class="btn btn-outline btn-small" href="?{{ filter_qs }}{% if filter_qs %}&amp;{% endif %}page={{ page.next_page_number }}">Next</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

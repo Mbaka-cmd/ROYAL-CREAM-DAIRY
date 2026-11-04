@@ -1,0 +1,55 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Today at a glance</h1>
+
+{% if orders %}
+<h2>Orders</h2>
+<div class="cards">
+  <a class="stat{% if orders.new %} alert{% endif %}" href="{% url 'owner_orders' %}?status=NEW"><span class="n">{{ orders.new }}</span><span>Awaiting confirmation</span></a>
+  <a class="stat" href="{% url 'owner_orders' %}?status=CONFIRMED"><span class="n">{{ orders.confirmed }}</span><span>Confirmed</span></a>
+  <a class="stat" href="{% url 'owner_orders' %}?status=PREPARING"><span class="n">{{ orders.preparing }}</span><span>Preparing</span></a>
+  <a class="stat" href="{% url 'owner_orders' %}?status=OUT_FOR_DELIVERY"><span class="n">{{ orders.out_for_delivery }}</span><span>Out for delivery</span></a>
+  <a class="stat{% if orders.delivery_failed %} alert{% endif %}" href="{% url 'owner_orders' %}?status=DELIVERY_FAILED"><span class="n">{{ orders.delivery_failed }}</span><span>Delivery failed</span></a>
+  <a class="stat good" href="{% url 'owner_orders' %}?status=COMPLETED"><span class="n">{{ orders.completed_today }}</span><span>Completed today</span></a>
+</div>
+{% endif %}
+
+{% if stock %}
+<h2>Stock</h2>
+<div class="cards">
+  <a class="stat{% if stock.low %} warn-card{% endif %}" href="{% url 'owner_inventory' %}?filter=low"><span class="n">{{ stock.low }}</span><span>Low stock</span></a>
+  <a class="stat{% if stock.out %} alert{% endif %}" href="{% url 'owner_inventory' %}?filter=out"><span class="n">{{ stock.out }}</span><span>Out of stock</span></a>
+</div>
+{% endif %}
+
+{% if notifications %}
+<h2>WhatsApp messages</h2>
+<div class="cards">
+  <a class="stat{% if notifications.needs_review %} alert{% endif %}" href="{% url 'owner_notifications' %}?status=review"><span class="n">{{ notifications.needs_review }}</span><span>Need review</span></a>
+  <a class="stat{% if notifications.unsent %} warn-card{% endif %}" href="{% url 'owner_notifications' %}?status=pending"><span class="n">{{ notifications.unsent }}</span><span>Unsent for 15+ min</span></a>
+</div>
+{% endif %}
+
+{% if orders %}
+<h2>Latest orders</h2>
+<div class="table-wrap">
+<table class="tbl">
+  <thead><tr><th>Order</th><th>Customer</th><th>Area</th><th class="num">Total</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for o in recent_orders %}
+  <tr>
+    <td><a href="{% url 'owner_order_detail' o.pk %}">{{ o.reference }}</a></td>
+    <td>{{ o.customer.name }}</td>
+    <td>{{ o.delivery_area }}</td>
+    <td class="num">KSh {{ o.total|floatformat:"-2" }}</td>
+    <td><span class="st st-{{ o.status|lower }}">{{ o.get_status_display }}</span></td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="5" class="muted">No orders yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endif %}
+{% endblock %}

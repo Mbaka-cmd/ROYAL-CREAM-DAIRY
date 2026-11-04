@@ -1,0 +1,13 @@
+{% if form.non_field_errors %}<p class="notice error" role="alert">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+{% for field in form.visible_fields %}
+<div class="field{% if field.errors %} has-error{% endif %}">
+  {% if field.field.widget.input_type == "checkbox" %}
+  <label class="check">{{ field }} <span>{{ field.label }}</span></label>
+  {% else %}
+  {{ field.label_tag }}{{ field }}
+  {% endif %}
+  {% if field.help_text %}<p class="muted small">{{ field.help_text }}</p>{% endif %}
+  {% if field.errors %}<p class="warn">{{ field.errors|join:" " }}</p>{% endif %}
+</div>
+{% endfor %}
+{% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}

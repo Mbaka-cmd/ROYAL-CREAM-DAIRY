@@ -1,0 +1,95 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Order {{ order.reference }}{% endblock %}
+{% block content %}
+<p><a href="{% url 'owner_orders' %}">&larr; All orders</a></p>
+<h1>{{ order.reference }} <span class="st st-{{ order.status|lower }}">{{ order.get_status_display }}</span></h1>
+<p class="muted">Placed {{ order.created_at|date:"d M Y H:i" }}</p>
+
+<div class="two-col">
+  <section class="panel">
+    <h2>Customer</h2>
+    <p><strong>{{ order.customer.name }}</strong></p>
+    <p><a href="tel:{{ order.customer.phone }}">{{ order.customer.phone }}</a></p>
+    <p class="muted small">WhatsApp updates: {% if order.customer.whatsapp_opt_in %}customer agreed{% else %}not agreed{% endif %}</p>
+    <h2>Delivery</h2>
+    <p>{{ order.delivery_area }}<br>{{ order.delivery_address }}</p>
+    {% if order.delivery_instructions %}<p class="muted">Note: {{ order.delivery_instructions }}</p>{% endif %}
+    <p><strong>Payment:</strong> {{ order.get_payment_method_display }}</p>
+    {% if order.cancel_reason %}<p class="warn">Cancelled: {{ order.cancel_reason }}</p>{% endif %}
+  </section>
+
+  <section class="panel">
+    <h2>Items</h2>
+    <div class="table-wrap">
+    <table class="tbl">
+      <thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Total</th></tr></thead>
+      <tbody>
+      {% for item in order.items.all %}
+      <tr><td>{{ item.product_name }} {{ item.variant_name }}</td><td class="num">{{ item.quantity }}</td><td class="num">KSh {{ item.line_total|floatformat:"-2" }}</td></tr>
+      {% endfor %}
+      </tbody>
+      <tfoot>
+        {% if order.delivery_fee > 0 %}<tr><td colspan="2">Delivery</td><td class="num">KSh {{ order.delivery_fee|floatformat:"-2" }}</td></tr>{% endif %}
+        <tr class="grand"><td colspan="2">Total</td><td class="num">KSh {{ order.total|floatformat:"-2" }}</td></tr>
+      </tfoot>
+    </table>
+    </div>
+  </section>
+</div>
+
+{% if perms.orders.change_order and transitions or perms.orders.change_order and can_cancel %}
+<section class="panel">
+  <h2>Actions</h2>
+  <div class="actions">
+    {% for value, label in transitions %}
+    <form method="post" action="{% url 'owner_order_status' order.pk %}">{% csrf_token %}
+      <input type="hidden" name="status" value="{{ value }}">
+      <button class="btn" type="submit">{{ label }}</button>
+    </form>
+    {% endfor %}
+  </div>
+  {% if can_cancel %}
+  <form method="post" action="{% url 'owner_order_status' order.pk %}" class="cancel-form">{% csrf_token %}
+    <input type="hidden" name="status" value="CANCELLED">
+    <label for="cancel-note">Cancel this order (reason required)</label>
+    <input id="cancel-note" type="text" name="note" maxlength="255" required>
+    <button class="btn btn-danger" type="submit">Cancel order</button>
+  </form>
+  {% endif %}
+</section>
+{% endif %}
+
+<section class="panel">
+  <h2>History</h2>
+  <ul class="timeline">
+    {% for h in order.status_history.all %}
+    <li>{{ h.created_at|date:"d M H:i" }} &middot; {% if h.old_status %}{{ h.old_status }} &rarr; {% endif %}<strong>{{ h.new_status }}</strong>{% if h.changed_by %} by {{ h.changed_by.username }}{% endif %}{% if h.note %} &middot; {{ h.note }}{% endif %}</li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="panel">
+  <h2>WhatsApp messages</h2>
+  <div class="table-wrap">
+  <table class="tbl">
+    <thead><tr><th>To</th><th>Message</th><th>Status</th><th class="num">Tries</th><th>Last error</th><th></th></tr></thead>
+    <tbody>
+    {% for n in order.notifications.all %}
+    <tr>
+      <td>{{ n.get_recipient_type_display }}</td>
+      <td>{{ n.get_event_display }}</td>
+      <td><span class="st st-{{ n.status|lower }}">{{ n.get_status_display }}</span></td>
+      <td class="num">{{ n.attempts }}</td>
+      <td class="small">{{ n.last_error }}</td>
+      <td>{% if n.status in retryable and perms.notifications.change_notification %}
+        <form method="post" action="{% url 'owner_notification_retry' n.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{% url 'owner_order_detail' order.pk %}"><button class="btn btn-small" type="submit">Retry</button></form>
+      {% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="muted">No WhatsApp messages for this order.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endblock %}

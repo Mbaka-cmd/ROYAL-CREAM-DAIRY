@@ -1,0 +1,38 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<h1>Products</h1>
+<form method="get" class="filter-bar">
+  <input type="text" name="q" value="{{ q }}" placeholder="Search products" aria-label="Search products">
+  <button class="btn btn-small" type="submit">Search</button>
+  {% if perms.catalogue.add_product %}<a class="btn btn-small btn-gold" href="{% url 'owner_product_create' %}">Add product</a>{% endif %}
+</form>
+
+<div class="table-wrap">
+<table class="tbl">
+  <thead><tr><th>Product</th><th>Category</th><th>Sizes and prices</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for p in page.object_list %}
+  <tr>
+    <td>{{ p.name }}</td>
+    <td>{{ p.category.name }}</td>
+    <td class="small">{% for v in p.variants.all %}{{ v.name }}: KSh {{ v.price|floatformat:"-2" }}{% if not v.is_active %} (off){% endif %}{% if not forloop.last %}<br>{% endif %}{% endfor %}</td>
+    <td><span class="st {% if p.is_active %}st-completed{% else %}st-cancelled{% endif %}">{% if p.is_active %}Active{% else %}Hidden{% endif %}</span></td>
+    <td>{% if perms.catalogue.change_product %}<a href="{% url 'owner_product_update' p.pk %}">Edit</a>{% endif %}</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="5" class="muted">No products found.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% if page.paginator.num_pages > 1 %}
+<nav class="pager" aria-label="Pages">
+  {% if page.has_previous %}<a class="btn btn-outline btn-small" href="?{{ filter_qs }}{% if filter_qs %}&amp;{% endif %}page={{ page.previous_page_number }}">Previous</a>{% endif %}
+  <span class="muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a class="btn btn-outline btn-small" href="?{{ filter_qs }}{% if filter_qs %}&amp;{% endif %}page={{ page.next_page_number }}">Next</a>{% endif %}
+</nav>
+{% endif %}
+<p class="muted small">Categories are managed by the owner in the admin area.</p>
+{% endblock %}

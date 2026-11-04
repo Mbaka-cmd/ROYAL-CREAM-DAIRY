@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.reference }} | Royal Cream Dairy{% endblock %}
+{% block head_extra %}<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer">{% endblock %}
+{% block body_attrs %} data-clear-cart="1"{% endblock %}
+{% block content %}
+<main class="wrap page narrow">
+  {% if GA_ID %}{{ ga_purchase|json_script:"ga-purchase" }}{% endif %}
+  <div class="panel">
+    <h1>Thank you, {{ order.customer.name }}!</h1>
+    <p>Your order has been received. Our team will confirm your order shortly.</p>
+    <p class="ref">Order reference: <strong>{{ order.reference }}</strong></p>
+    <p class="muted">Status: {{ order.get_status_display }}</p>
+
+    <table class="items">
+      <thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Total</th></tr></thead>
+      <tbody>
+        {% for item in order.items.all %}
+        <tr>
+          <td>{{ item.product_name }} {{ item.variant_name }}</td>
+          <td class="num">{{ item.quantity }}</td>
+          <td class="num">KSh {{ item.line_total|floatformat:"-2" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        {% if order.delivery_fee > 0 %}
+        <tr><td colspan="2">Delivery</td><td class="num">KSh {{ order.delivery_fee|floatformat:"-2" }}</td></tr>
+        {% endif %}
+        <tr class="grand"><td colspan="2">Total</td><td class="num">KSh {{ order.total|floatformat:"-2" }}</td></tr>
+      </tfoot>
+    </table>
+
+    <p><strong>Delivery to:</strong> {{ order.delivery_area }}, {{ order.delivery_address }}</p>
+    <p><strong>Payment:</strong> {{ order.get_payment_method_display }}</p>
+    <p><a class="btn btn-outline" href="{% url 'product_list' %}">Continue shopping</a></p>
+  </div>
+</main>
+{% endblock %}

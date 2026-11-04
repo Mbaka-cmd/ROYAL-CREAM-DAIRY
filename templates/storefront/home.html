@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load seo %}
+{% block jsonld %}{% jsonld organization_jsonld %}{% endblock %}
+{% block content %}
+<section class="hero" data-parallax>
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <p class="eyebrow slide-in">Fresh Milk &middot; Mala &middot; Yoghurt &middot; Butter</p>
+    <h1><span class="line slide-in d1">Pure Goodness,</span> <span class="line slide-in d2">Every Day.</span></h1>
+    <p class="lead slide-in d3">Fresh dairy delivered around Chuka.</p>
+    <a class="btn btn-gold spring-up d4" href="{% url 'product_list' %}">Order now</a>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Fresh Milk</span><span>Mala</span><span>Yoghurt</span><span>Butter</span>
+    <span>Fresh Milk</span><span>Mala</span><span>Yoghurt</span><span>Butter</span>
+    <span>Fresh Milk</span><span>Mala</span><span>Yoghurt</span><span>Butter</span>
+    <span aria-hidden="true">Fresh Milk</span><span aria-hidden="true">Mala</span><span aria-hidden="true">Yoghurt</span><span aria-hidden="true">Butter</span>
+    <span aria-hidden="true">Fresh Milk</span><span aria-hidden="true">Mala</span><span aria-hidden="true">Yoghurt</span><span aria-hidden="true">Butter</span>
+    <span aria-hidden="true">Fresh Milk</span><span aria-hidden="true">Mala</span><span aria-hidden="true">Yoghurt</span><span aria-hidden="true">Butter</span>
+  </div>
+</div>
+
+<main class="wrap page">
+  <section class="reveal">
+    <h2>Our products</h2>
+    {% if products %}
+    <div class="grid">
+      {% for p in products %}{% include "catalogue/_product_card.html" %}{% endfor %}
+    </div>
+    <p class="center"><a class="btn btn-outline" href="{% url 'product_list' %}">See all products</a></p>
+    {% else %}
+    <p class="muted">Products are coming soon.</p>
+    {% endif %}
+  </section>
+
+  <section class="reveal">
+    <h2>About Royal Cream</h2>
+    <p>Royal Cream Dairy brings dairy products to homes around Chuka. Choose what you need, tell us where to deliver, and pay when your order arrives.</p>
+  </section>
+
+  <section class="reveal">
+    <h2>Delivery</h2>
+    <p>We deliver around Chuka. Enter your area and address at checkout, and we will confirm your order and delivery with you.</p>
+  </section>
+
+  <section class="reveal">
+    <h2>Why order from us</h2>
+    <ul class="ticks">
+      <li>Order from your phone in a few taps.</li>
+      <li>No account needed.</li>
+      <li>Pay on delivery.</li>
+    </ul>
+  </section>
+
+  <section class="reveal">
+    <h2>How ordering works</h2>
+    <ol class="steps">
+      <li><strong>Choose</strong> your products and add them to your cart.</li>
+      <li><strong>Enter</strong> your name, phone number and delivery details.</li>
+      <li><strong>Pay on delivery.</strong> We will confirm your order shortly.</li>
+    </ol>
+  </section>
+</main>
+{% endblock %}

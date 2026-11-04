@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load seo %}
+{% block title %}{{ product.name }} | Royal Cream Dairy{% endblock %}
+{% block description %}{{ meta_description }}{% endblock %}
+{% block og_title %}{{ product.name }} | Royal Cream Dairy{% endblock %}
+{% block og_description %}{{ meta_description }}{% endblock %}
+{% block jsonld %}{% jsonld product_jsonld %}{% endblock %}
+{% block content %}
+<main class="wrap page detail">
+  {% if GA_ID %}{{ ga_view_item|json_script:"ga-view-item" }}{% endif %}
+  <p><a href="{% url 'product_list' %}">&larr; All products</a></p>
+  <div class="detail-grid">
+    <div class="detail-media">
+      {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}<span class="placeholder">{{ product.name|slice:":1" }}</span>{% endif %}
+    </div>
+    <div>
+      <p class="eyebrow">{{ product.category.name }}</p>
+      <h1>{{ product.name }}</h1>
+      {% if product.description %}<p>{{ product.description|linebreaksbr }}</p>{% endif %}
+      {% include "catalogue/_variants.html" with product=product %}
+      <p><a class="btn btn-outline" href="{% url 'checkout' %}">View cart</a></p>
+    </div>
+  </div>
+</main>
+{% endblock %}

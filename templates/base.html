@@ -1,0 +1,55 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173D2B">
+  <title>{% block title %}Royal Cream Dairy | Fresh Milk, Mala &amp; Yoghurt in Chuka{% endblock %}</title>
+  <meta name="description" content="{% block description %}Order fresh milk, mala, yoghurt and butter from Royal Cream Dairy. Convenient dairy delivery around Chuka.{% endblock %}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  {% if GOOGLE_SITE_VERIFICATION %}<meta name="google-site-verification" content="{{ GOOGLE_SITE_VERIFICATION }}">{% endif %}
+  <meta property="og:site_name" content="Royal Cream Dairy">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_KE">
+  <meta property="og:title" content="{% block og_title %}Royal Cream Dairy | Pure Goodness, Every Day.{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Fresh dairy products delivered around Chuka.{% endblock %}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  {% if og_image %}<meta property="og:image" content="{{ og_image }}">{% endif %}
+  <meta name="twitter:card" content="{% if og_image %}summary_large_image{% else %}summary{% endif %}">
+  <link rel="icon" type="image/svg+xml" href="{% static 'icons/favicon.svg' %}">
+  {% block jsonld %}{% endblock %}
+  {% block head_extra %}{% endblock %}
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+</head>
+<body{% block body_attrs %}{% endblock %}>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="{% url 'home' %}">Royal Cream Dairy</a>
+      <nav class="nav" aria-label="Main">
+        <a href="{% url 'product_list' %}">Products</a>
+        <a href="{% url 'checkout' %}" class="cart-link">Cart <span class="badge" data-cart-count hidden>0</span></a>
+      </nav>
+    </div>
+  </header>
+  <div id="main" tabindex="-1"></div>
+  {% block content %}{% endblock %}
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <p><strong>Royal Cream Dairy</strong><br>Pure Goodness, Every Day.</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="{% url 'product_list' %}">Products</a>
+        <a href="{% url 'privacy' %}">Privacy policy</a>
+        {% if PUBLIC_WHATSAPP_URL %}<a href="{{ PUBLIC_WHATSAPP_URL }}" data-track="whatsapp" target="_blank" rel="noopener">Chat on WhatsApp</a>{% endif %}
+        {% if SOCIAL_FACEBOOK_URL %}<a href="{{ SOCIAL_FACEBOOK_URL }}" target="_blank" rel="noopener noreferrer">Facebook</a>{% endif %}
+        {% if SOCIAL_TIKTOK_URL %}<a href="{{ SOCIAL_TIKTOK_URL }}" target="_blank" rel="noopener noreferrer">TikTok</a>{% endif %}
+      </nav>
+    </div>
+  </footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="{% static 'js/analytics.js' %}" defer data-ga-id="{{ GA_ID }}"></script>
+  <script src="{% static 'js/cart.js' %}" defer></script>
+  <script src="{% static 'js/site.js' %}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

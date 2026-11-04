@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{% if active_category_name %}{{ active_category_name }} | {% endif %}Products | Royal Cream Dairy{% endblock %}
+{% block description %}Browse {% if active_category_name %}{{ active_category_name|lower }}{% else %}fresh milk, mala, yoghurt and butter{% endif %} from Royal Cream Dairy. Delivery around Chuka, pay on delivery.{% endblock %}
+{% block content %}
+<main class="wrap page">
+  <h1>{% if active_category_name %}{{ active_category_name }}{% else %}Products{% endif %}</h1>
+  <nav class="filters" aria-label="Categories">
+    <a href="{% url 'product_list' %}" class="chip{% if not active_category %} active{% endif %}">All</a>
+    {% for c in categories %}
+    <a href="?category={{ c.slug }}" class="chip{% if c.slug == active_category %} active{% endif %}">{{ c.name }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if page.object_list %}
+  <div class="grid">
+    {% for p in page.object_list %}{% include "catalogue/_product_card.html" %}{% endfor %}
+  </div>
+  {% if page.paginator.num_pages > 1 %}
+  <nav class="pager" aria-label="Pages">
+    {% if page.has_previous %}<a class="btn btn-outline btn-small" href="?{% if active_category %}category={{ active_category }}&amp;{% endif %}page={{ page.previous_page_number }}">Previous</a>{% endif %}
+    <span class="muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a class="btn btn-outline btn-small" href="?{% if active_category %}category={{ active_category }}&amp;{% endif %}page={{ page.next_page_number }}">Next</a>{% endif %}
+  </nav>
+  {% endif %}
+  {% else %}
+  <p class="muted">No products found.</p>
+  {% endif %}
+</main>
+{% endblock %}

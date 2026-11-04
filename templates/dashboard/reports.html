@@ -1,0 +1,44 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h1>Sales report</h1>
+<p class="muted small">Counts completed (delivered) orders only, by delivery date. Cancelled and open orders are not sales.</p>
+<form method="get" class="filter-bar">
+  <label for="start" class="sr">From</label><input id="start" type="date" name="start" value="{{ start|date:'Y-m-d' }}">
+  <label for="end" class="sr">To</label><input id="end" type="date" name="end" value="{{ end|date:'Y-m-d' }}">
+  <button class="btn btn-small" type="submit">Show</button>
+</form>
+
+<div class="cards">
+  <div class="stat good"><span class="n">{{ totals.orders }}</span><span>Orders delivered</span></div>
+  <div class="stat good"><span class="n">KSh {{ totals.revenue|floatformat:"-2" }}</span><span>Sales</span></div>
+</div>
+
+<h2>By day</h2>
+<div class="table-wrap">
+<table class="tbl">
+  <thead><tr><th>Date</th><th class="num">Orders</th><th class="num">Sales</th></tr></thead>
+  <tbody>
+  {% for row in daily %}
+  <tr><td>{{ row.day|date:"D d M Y" }}</td><td class="num">{{ row.orders }}</td><td class="num">KSh {{ row.revenue|floatformat:"-2" }}</td></tr>
+  {% empty %}
+  <tr><td colspan="3" class="muted">No completed orders in this period.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2>Top products</h2>
+<div class="table-wrap">
+<table class="tbl">
+  <thead><tr><th>Product</th><th class="num">Units</th><th class="num">Sales</th></tr></thead>
+  <tbody>
+  {% for row in top %}
+  <tr><td>{{ row.product_name }} {{ row.variant_name }}</td><td class="num">{{ row.units }}</td><td class="num">KSh {{ row.revenue|floatformat:"-2" }}</td></tr>
+  {% empty %}
+  <tr><td colspan="3" class="muted">No sales in this period.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

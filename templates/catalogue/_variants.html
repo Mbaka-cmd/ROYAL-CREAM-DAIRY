@@ -1,0 +1,13 @@
+<ul class="variants">
+  {% for v in product.variants.all %}
+  <li class="variant">
+    <span class="variant-name">{{ v.name }}</span>
+    <span class="price">KSh {{ v.price|floatformat:"-2" }}</span>
+    {% if v.available > 0 %}
+    <button type="button" class="btn btn-small js-add" data-variant="{{ v.id }}" data-max="{{ v.available }}" data-name="{{ product.name }} {{ v.name }}" data-price="{{ v.price|stringformat:'.2f' }}">Add</button>
+    {% else %}
+    <button type="button" class="btn btn-small" disabled>Out of stock</button>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
