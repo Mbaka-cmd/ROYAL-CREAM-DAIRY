@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#03193C">
   <title>{% block title %}Royal Cream Dairy | Fresh Milk, Mala &amp; Yoghurt in Chuka{% endblock %}</title>
-  <meta name="description" content="{% block description %}Order fresh milk, mala, yoghurt and butter from Royal Cream Dairy. Convenient dairy delivery around Chuka.{% endblock %}">
+  <meta name="description" content="{% block description %}Order fresh milk, mala, yoghurt and butter from Royal Cream Dairy. Convenient dairy delivery in Chuka and around.{% endblock %}">
   <link rel="canonical" href="{{ canonical_url }}">
   {% if GOOGLE_SITE_VERIFICATION %}<meta name="google-site-verification" content="{{ GOOGLE_SITE_VERIFICATION }}">{% endif %}
   <meta property="og:site_name" content="Royal Cream Dairy">
@@ -21,8 +21,10 @@
   {% block jsonld %}{% endblock %}
   {% block head_extra %}{% endblock %}
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <link rel="stylesheet" href="{% static 'css/storefront.css' %}">
 </head>
 <body{% block body_attrs %}{% endblock %}>
+  {% include "partials/icons.html" %}
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap header-row">
@@ -32,7 +34,7 @@
       </a>
       <nav class="nav" aria-label="Main">
         <a href="{% url 'product_list' %}">Products</a>
-        <a href="{% url 'checkout' %}" class="cart-link">Cart <span class="badge" data-cart-count hidden>0</span></a>
+        <a href="{% url 'checkout' %}" class="cart-link"><svg class="icon" aria-hidden="true"><use href="#i-cart"/></svg>Cart <span class="badge" data-cart-count hidden>0</span></a>
       </nav>
     </div>
   </header>
@@ -40,7 +42,7 @@
   {% block content %}{% endblock %}
   <footer class="site-footer">
     <div class="wrap footer-grid">
-      <p><strong>Royal Cream Dairy</strong><br>Pure Goodness, Every Day.</p>
+      <p><strong>Royal Cream Dairy</strong><br>Pure Goodness, Every Day.<small>Delivering in Chuka and around</small></p>
       <nav class="footer-links" aria-label="Footer">
         <a href="{% url 'product_list' %}">Products</a>
         <a href="{% url 'privacy' %}">Privacy policy</a>
@@ -50,9 +52,11 @@
       </nav>
     </div>
   </footer>
+  {% if PUBLIC_WHATSAPP_URL %}<a class="wa-float" href="{{ PUBLIC_WHATSAPP_URL }}" data-track="whatsapp" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg></a>{% endif %}
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="{% static 'js/analytics.js' %}" defer data-ga-id="{{ GA_ID }}"></script>
   <script src="{% static 'js/cart.js' %}" defer></script>
+  <script src="{% static 'js/storefront.js' %}" defer></script>
   <script src="{% static 'js/site.js' %}" defer></script>
   {% block scripts %}{% endblock %}
 </body>

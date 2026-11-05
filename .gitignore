@@ -13,3 +13,6 @@ logs/
 tmp/
 backups/
 *.dump
+_backup*/
+_product_photos_ready/
+audit*.txt

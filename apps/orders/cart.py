@@ -2,14 +2,16 @@ from decimal import Decimal
 
 from apps.catalogue.selectors import sellable_variants
 
-from .services import MAX_DISTINCT_ITEMS, MAX_ITEM_QUANTITY, _delivery_fee
+from apps.delivery.selectors import zone_by_id
+
+from .services import MAX_DISTINCT_ITEMS, MAX_ITEM_QUANTITY, _delivery_fee, below_minimum_message
 
 
 def _money(value):
     return f"{value:.2f}"
 
 
-def price_cart(raw_items):
+def price_cart(raw_items, zone_id=None):
     """Price a cart from database values only. Client-supplied prices are never read."""
     wanted = {}
     for raw in list(raw_items)[: MAX_DISTINCT_ITEMS * 2]:
@@ -58,7 +60,11 @@ def price_cart(raw_items):
             }
         )
 
-    fee = _delivery_fee()
+    zone = zone_by_id(zone_id) if zone_id not in (None, "") else None
+    notice = below_minimum_message(zone, subtotal)
+    if notice:
+        valid = False
+    fee = _delivery_fee(zone)
     return {
         "lines": lines,
         "unavailable": unavailable,
@@ -66,4 +72,5 @@ def price_cart(raw_items):
         "delivery_fee": _money(fee),
         "total": _money(subtotal + fee),
         "valid": valid,
+        "notice": notice,
     }

@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from apps.catalogue.models import ProductVariant
 from apps.customers.services import InvalidPhone, normalize_ke_phone, upsert_customer
+from apps.delivery.selectors import active_zones, zone_by_id
 from apps.inventory import services as inventory
 from apps.notifications import services as notifications
 from apps.inventory.services import InsufficientStock  # noqa: F401  (re-exported for views)
@@ -58,8 +59,29 @@ def _clean_items(items):
     return merged
 
 
-def _delivery_fee():
+def _delivery_fee(zone=None):
+    """Fee for a delivery zone, or the flat DELIVERY_FEE setting when no zone applies."""
+    if zone is not None:
+        return Decimal(zone.fee).quantize(Decimal("0.01"))
     return Decimal(str(getattr(settings, "DELIVERY_FEE", "0.00"))).quantize(Decimal("0.01"))
+
+
+def below_minimum_message(zone, subtotal):
+    """Customer-safe message when the subtotal is under the zone's minimum order, else empty."""
+    if zone is not None and zone.min_order > 0 and subtotal < zone.min_order:
+        minimum = f"{zone.min_order:.2f}".removesuffix(".00")
+        return f"The minimum order for {zone.name} is KSh {minimum}."
+    return ""
+
+
+def _resolve_zone(zone_id):
+    """None while no zones are configured (free-text area). Otherwise a valid active zone is required."""
+    if not active_zones().exists():
+        return None
+    zone = zone_by_id(zone_id)
+    if zone is None:
+        raise CheckoutError("Please choose your delivery area.")
+    return zone
 
 
 def place_order(
@@ -72,6 +94,7 @@ def place_order(
     delivery_address,
     idempotency_key,
     delivery_instructions="",
+    delivery_zone_id=None,
 ):
     """Create an order. Prices always come from the database, never from the client.
 
@@ -93,6 +116,9 @@ def place_order(
     delivery_instructions = (delivery_instructions or "").strip()
     if not 2 <= len(name) <= 150:
         raise CheckoutError("Please enter your name.")
+    zone = _resolve_zone(delivery_zone_id)
+    if zone is not None:
+        delivery_area = zone.name
     if not 1 <= len(delivery_area) <= 100:
         raise CheckoutError("Please enter your delivery area.")
     if not 3 <= len(delivery_address) <= 255:
@@ -115,6 +141,7 @@ def place_order(
                 delivery_address=delivery_address,
                 delivery_instructions=delivery_instructions,
                 key=key,
+                zone=zone,
             )
     except IntegrityError:
         existing = Order.objects.filter(idempotency_key=key).first()
@@ -126,7 +153,9 @@ def place_order(
     return order, True
 
 
-def _create_order(*, cart, name, phone, whatsapp_consent, delivery_area, delivery_address, delivery_instructions, key):
+def _create_order(
+    *, cart, name, phone, whatsapp_consent, delivery_area, delivery_address, delivery_instructions, key, zone=None
+):
     variants = {
         v.id: v
         for v in ProductVariant.objects.select_related("product").filter(
@@ -143,7 +172,10 @@ def _create_order(*, cart, name, phone, whatsapp_consent, delivery_area, deliver
         line_total = variant.price * quantity
         subtotal += line_total
         lines.append((variant, quantity, line_total))
-    delivery_fee = _delivery_fee()
+    message = below_minimum_message(zone, subtotal)
+    if message:
+        raise CheckoutError(message)
+    delivery_fee = _delivery_fee(zone)
 
     customer = upsert_customer(name=name, phone=phone, whatsapp_consent=whatsapp_consent)
 

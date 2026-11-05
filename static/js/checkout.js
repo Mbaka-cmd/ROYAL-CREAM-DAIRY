@@ -10,6 +10,7 @@
   var msgEl = document.getElementById("cart-message");
   var emptyEl = document.getElementById("cart-empty");
   var submitBtn = document.getElementById("place-order");
+  var zoneEl = form.querySelector("[name=delivery_zone]");
   var cartInput = form.querySelector("[name=cart]");
   var keyInput = form.querySelector("[name=idempotency_key]");
   var csrf = form.querySelector("[name=csrfmiddlewaretoken]").value;
@@ -111,7 +112,8 @@
       totalsEl.appendChild(row);
     }
     addTotal("Subtotal", fmt(data.subtotal));
-    if (parseFloat(data.delivery_fee) > 0) addTotal("Delivery", fmt(data.delivery_fee));
+    if (zoneEl && !zoneEl.value) addTotal("Delivery", "Choose your area");
+    else if (parseFloat(data.delivery_fee) > 0) addTotal("Delivery", fmt(data.delivery_fee));
     addTotal("Total", fmt(data.total), true);
   }
 
@@ -136,7 +138,7 @@
       method: "POST",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json", "X-CSRFToken": csrf },
-      body: JSON.stringify({ items: items })
+      body: JSON.stringify({ items: items, zone: zoneEl ? zoneEl.value : "" })
     })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
@@ -154,7 +156,7 @@
         }
         render(data);
         state.valid = !!data.valid; trackBeginCheckout(data);
-        setMessage(data.valid ? "" : "Please fix the highlighted items.");
+        setMessage(data.valid ? "" : (data.notice || "Please fix the highlighted items."));
         updateSubmit();
       })
       .catch(function () {
@@ -175,6 +177,8 @@
     submitBtn.disabled = true;
     submitBtn.textContent = "Placing order...";
   });
+
+  if (zoneEl) zoneEl.addEventListener("change", refresh);
 
   window.addEventListener("pageshow", function () {
     submitBtn.textContent = "Place order";

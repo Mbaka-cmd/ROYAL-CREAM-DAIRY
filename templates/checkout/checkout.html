@@ -32,8 +32,20 @@
       <label for="f-phone">Phone number</label>
       <input id="f-phone" name="phone" type="tel" inputmode="tel" required maxlength="20" autocomplete="tel" placeholder="07XX XXX XXX" value="{{ form.phone }}">
 
+      {% if zones %}
+      <label for="f-zone">Delivery area</label>
+      <select id="f-zone" name="delivery_zone" required>
+        <option value="">Choose your area</option>
+        {% for z in zones %}
+        <option value="{{ z.id }}"{% if form.delivery_zone == z.id|stringformat:"s" %} selected{% endif %}>{{ z.name }}{% if z.fee > 0 %} (delivery KSh {{ z.fee|floatformat:"-2" }}){% else %} (free delivery){% endif %}</option>
+        {% endfor %}
+      </select>
+      <p class="muted small">We deliver in Chuka and the surrounding areas.</p>
+      {% else %}
       <label for="f-area">Delivery area</label>
-      <input id="f-area" name="delivery_area" type="text" required maxlength="100" placeholder="Your area or estate" value="{{ form.delivery_area }}">
+      <input id="f-area" name="delivery_area" type="text" required maxlength="100" placeholder="Your area, estate or village" value="{{ form.delivery_area }}">
+      <p class="muted small">We deliver in Chuka and the surrounding areas.</p>
+      {% endif %}
 
       <label for="f-address">Specific address or landmark</label>
       <input id="f-address" name="delivery_address" type="text" required minlength="3" maxlength="255" value="{{ form.delivery_address }}">

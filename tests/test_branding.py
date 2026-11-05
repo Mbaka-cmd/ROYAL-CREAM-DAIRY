@@ -101,7 +101,8 @@ class StylesheetTests(TestCase):
     def test_every_variable_used_is_defined(self):
         site = css("site.css")
         defined = set(re.findall(r"--([a-z0-9-]+)\s*:", site))
-        for name in ("site.css", "dashboard.css"):
+        defined |= set(re.findall(r"--([a-z0-9-]+)\s*:", css("storefront.css")))
+        for name in ("site.css", "dashboard.css", "storefront.css"):
             used = set(re.findall(r"var\(--([a-z0-9-]+)", css(name)))
             self.assertEqual(used - defined, set(), f"undefined variables in {name}")
 
@@ -129,7 +130,7 @@ class StylesheetTests(TestCase):
                 self.assertGreaterEqual(ratio(fg, bg), 4.5, f"{label}: {ratio(fg, bg):.2f}")
 
     def test_every_class_used_in_templates_is_styled(self):
-        styles = css("site.css") + css("dashboard.css")
+        styles = css("site.css") + css("dashboard.css") + css("storefront.css")
         hooks = {"js-add"}  # JavaScript hooks that are intentionally unstyled
         missing = {
             token: page

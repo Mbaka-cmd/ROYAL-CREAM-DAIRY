@@ -9,6 +9,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from django_ratelimit.decorators import ratelimit
 
 from apps.catalogue.models import ProductVariant
+from apps.delivery.selectors import active_zones
 
 from . import services
 from .cart import price_cart
@@ -39,11 +40,12 @@ def cart_validate(request):
     items = payload.get("items") if isinstance(payload, dict) else None
     if not isinstance(items, list):
         return JsonResponse({"error": "invalid_items"}, status=400)
-    return JsonResponse(price_cart(items))
+    return JsonResponse(price_cart(items, payload.get("zone")))
 
 
 def _render_checkout(request, *, form=None, error="", status=200):
-    return render(request, "checkout/checkout.html", {"form": form or {}, "error": error}, status=status)
+    context = {"form": form or {}, "error": error, "zones": list(active_zones())}
+    return render(request, "checkout/checkout.html", context, status=status)
 
 
 @require_http_methods(["GET", "POST"])
@@ -57,6 +59,7 @@ def checkout(request):
         "name": data.get("name", ""),
         "phone": data.get("phone", ""),
         "delivery_area": data.get("delivery_area", ""),
+        "delivery_zone": data.get("delivery_zone", ""),
         "delivery_address": data.get("delivery_address", ""),
         "delivery_instructions": data.get("delivery_instructions", ""),
         "whatsapp_consent": data.get("whatsapp_consent") == "on",
@@ -97,6 +100,7 @@ def checkout(request):
             delivery_area=form["delivery_area"],
             delivery_address=form["delivery_address"],
             delivery_instructions=form["delivery_instructions"],
+            delivery_zone_id=form["delivery_zone"],
             idempotency_key=key,
         )
     except services.CheckoutError as exc:

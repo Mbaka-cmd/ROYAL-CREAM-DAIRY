@@ -18,7 +18,11 @@ def home(request):
     return render(
         request,
         "storefront/home.html",
-        {"products": products, "organization_jsonld": seo.organization_jsonld(request)},
+        {
+            "products": products,
+            "categories": list(Category.objects.filter(is_active=True)),
+            "organization_jsonld": seo.organization_jsonld(request),
+        },
     )
 
 
