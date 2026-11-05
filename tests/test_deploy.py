@@ -85,7 +85,7 @@ class MediaServingTests(TestCase):
                 "/media/products/../../rc_secret_test.txt",
             ]:
                 with self.subTest(path=path):
-                    self.assertEqual(self.client.get(path).status_code, 404)
+                    response = self.client.get(path); self.assertIn(response.status_code, (400, 404)); self.assertNotIn(b"top secret", response.content)
 
     def test_no_directory_listing_and_missing_files(self):
         with override_settings(MEDIA_ROOT=self.tmp):
