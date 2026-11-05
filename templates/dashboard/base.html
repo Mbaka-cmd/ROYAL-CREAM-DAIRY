@@ -4,26 +4,34 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#03193C">
   <title>{% block title %}Owner dashboard{% endblock %} | Royal Cream Dairy</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'icons/favicon.svg' %}">
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body class="dash">
   <header class="dash-header">
     <div class="wrap dash-row">
-      <a class="brand" href="{% url 'owner_home' %}">Royal Cream <span class="owner-tag">Owner</span></a>
+      <a class="brand" href="{% url 'owner_home' %}" aria-label="Royal Cream Dairy owner dashboard">
+        <img class="brand-logo" src="{% static 'images/logo-header.webp' %}" alt="" width="81" height="64" decoding="async">
+        <span class="brand-name">Royal Cream <small>Dairy</small></span>
+        <span class="owner-tag">Owner</span>
+      </a>
       {% if user.is_authenticated %}
-      <form method="post" action="{% url 'owner_logout' %}">{% csrf_token %}<button class="link-btn light" type="submit">Log out</button></form>
+      <form method="post" action="{% url 'owner_logout' %}">{% csrf_token %}<button class="link-btn" type="submit">Log out</button></form>
       {% endif %}
     </div>
     {% if user.is_authenticated %}
-    <nav class="wrap dash-nav" aria-label="Dashboard">
-      <a href="{% url 'owner_home' %}">Home</a>
-      {% if perms.orders.view_order %}<a href="{% url 'owner_orders' %}">Orders</a>{% endif %}
-      {% if perms.inventory.view_inventory %}<a href="{% url 'owner_inventory' %}">Stock</a>{% endif %}
-      {% if perms.catalogue.view_product %}<a href="{% url 'owner_products' %}">Products</a>{% endif %}
-      {% if perms.notifications.view_notification %}<a href="{% url 'owner_notifications' %}">Messages</a>{% endif %}
-      {% if perms.orders.view_order %}<a href="{% url 'owner_reports' %}">Reports</a>{% endif %}
+    <nav class="dash-nav" aria-label="Dashboard">
+      <div class="wrap dash-nav-inner">
+        <a href="{% url 'owner_home' %}">Home</a>
+        {% if perms.orders.view_order %}<a href="{% url 'owner_orders' %}">Orders</a>{% endif %}
+        {% if perms.inventory.view_inventory %}<a href="{% url 'owner_inventory' %}">Stock</a>{% endif %}
+        {% if perms.catalogue.view_product %}<a href="{% url 'owner_products' %}">Products</a>{% endif %}
+        {% if perms.notifications.view_notification %}<a href="{% url 'owner_notifications' %}">Messages</a>{% endif %}
+        {% if perms.orders.view_order %}<a href="{% url 'owner_reports' %}">Reports</a>{% endif %}
+      </div>
     </nav>
     {% endif %}
   </header>

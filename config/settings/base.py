@@ -178,7 +178,7 @@ PUBLIC_WHATSAPP_NUMBER = os.environ.get("PUBLIC_WHATSAPP_NUMBER", "").strip()
 SOCIAL_FACEBOOK_URL = os.environ.get("SOCIAL_FACEBOOK_URL", "").strip()
 SOCIAL_TIKTOK_URL = os.environ.get("SOCIAL_TIKTOK_URL", "").strip()
 GOOGLE_SITE_VERIFICATION = os.environ.get("GOOGLE_SITE_VERIFICATION", "").strip()
-DEFAULT_OG_IMAGE = os.environ.get("DEFAULT_OG_IMAGE", "").strip()  # e.g. images/og-default.png (under static/)
+DEFAULT_OG_IMAGE = os.environ.get("DEFAULT_OG_IMAGE", "images/og-default.jpg").strip()  # social preview image under static/
 PRIVACY_CONTACT_EMAIL = os.environ.get("PRIVACY_CONTACT_EMAIL", "").strip()
 PERSONAL_DATA_RETENTION_MONTHS = int(os.environ.get("PERSONAL_DATA_RETENTION_MONTHS", "24"))
 

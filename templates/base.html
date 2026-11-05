@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#173D2B">
+  <meta name="theme-color" content="#03193C">
   <title>{% block title %}Royal Cream Dairy | Fresh Milk, Mala &amp; Yoghurt in Chuka{% endblock %}</title>
   <meta name="description" content="{% block description %}Order fresh milk, mala, yoghurt and butter from Royal Cream Dairy. Convenient dairy delivery around Chuka.{% endblock %}">
   <link rel="canonical" href="{{ canonical_url }}">
@@ -17,6 +17,7 @@
   {% if og_image %}<meta property="og:image" content="{{ og_image }}">{% endif %}
   <meta name="twitter:card" content="{% if og_image %}summary_large_image{% else %}summary{% endif %}">
   <link rel="icon" type="image/svg+xml" href="{% static 'icons/favicon.svg' %}">
+  <link rel="apple-touch-icon" href="{% static 'images/icon-180.png' %}">
   {% block jsonld %}{% endblock %}
   {% block head_extra %}{% endblock %}
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
@@ -25,7 +26,10 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap header-row">
-      <a class="brand" href="{% url 'home' %}">Royal Cream Dairy</a>
+      <a class="brand" href="{% url 'home' %}" aria-label="Royal Cream Dairy home">
+        <img class="brand-logo" src="{% static 'images/logo-header.webp' %}" alt="" width="81" height="64" decoding="async" fetchpriority="high">
+        <span class="brand-name">Royal Cream <small>Dairy</small></span>
+      </a>
       <nav class="nav" aria-label="Main">
         <a href="{% url 'product_list' %}">Products</a>
         <a href="{% url 'checkout' %}" class="cart-link">Cart <span class="badge" data-cart-count hidden>0</span></a>
