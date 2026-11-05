@@ -74,21 +74,33 @@
   }
 })();
 
-/* patch-final3 */
+/* patch-final4 */
 (function(){
+  var WORDS=/^(fresh\s*milk|mala|yoghurt|yogurt|butter|[\s\u00b7\u2022.\-|,])+$/i;
   function go(){
-    var all=document.body.querySelectorAll('*'), track=null;
-    for(var i=0;i<all.length;i++){
-      var cs=getComputedStyle(all[i]);
-      if(cs.animationName && cs.animationName!=='none' && /FRESH MILK/i.test(all[i].textContent) && all[i].children.length>3){track=all[i];break;}
+    var best=null;
+    var els=document.body.querySelectorAll('div,ul,section,p');
+    for(var i=0;i<els.length;i++){
+      var el=els[i], t=(el.textContent||'').trim();
+      if(!t || !WORDS.test(t)) continue;
+      var n=(t.match(/fresh\s*milk|mala|yoghurt|yogurt|butter/ig)||[]).length;
+      if(n<8) continue;
+      best=el; /* keep going: the last match in document order is the innermost, so climb below */
+      break;
     }
-    if(!track) return;
-    for(var j=0;j<track.children.length;j++){
-      var c=track.children[j];
-      c.style.paddingLeft='40px'; c.style.paddingRight='40px'; c.style.letterSpacing='.16em';
+    if(!best) return;
+    /* climb to the outermost ancestor that is still only the marquee */
+    var strip=best;
+    while(strip.parentElement && strip.parentElement!==document.body){
+      var pt=(strip.parentElement.textContent||'').trim();
+      if(WORDS.test(pt)) strip=strip.parentElement; else break;
     }
-    var strip=track.parentElement;
-    if(strip && strip!==document.body){ document.body.insertBefore(strip, document.body.firstChild); }
+    strip.classList.add('rc-marquee');
+    var h=document.querySelector('.site-header');
+    var anchor=h;
+    while(anchor && anchor.parentElement && anchor.parentElement!==document.body) anchor=anchor.parentElement;
+    if(anchor && anchor.parentNode){ anchor.parentNode.insertBefore(strip, anchor.nextSibling); }
+    else { document.body.insertBefore(strip, document.body.firstChild); }
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',go);}else{go();}
 })();

@@ -140,3 +140,7 @@ footer{background:#03193c}
 :where(div,article,li):has(> .card-media){border:0;border-radius:20px;background:#fff;box-shadow:0 14px 34px rgba(3,25,60,.12),0 2px 6px rgba(3,25,60,.06);transition:transform .25s ease,box-shadow .25s ease;overflow:hidden}
 :where(div,article,li):has(> .card-media):hover{transform:translateY(-6px);box-shadow:0 22px 46px rgba(3,25,60,.18),0 4px 10px rgba(3,25,60,.08)}
 :where(div,ul,section):has(> * > .card-media){gap:22px!important}
+
+/* ---- patch-final4 ---- */
+.rc-marquee span,.rc-marquee li,.rc-marquee b,.rc-marquee strong,.rc-marquee a,.rc-marquee em{padding-left:28px;padding-right:28px;letter-spacing:.14em;white-space:nowrap}
+.card-media img{padding:8px;object-fit:contain}
