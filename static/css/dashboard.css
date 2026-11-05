@@ -1,0 +1,64 @@
+/* Owner dashboard: same brand, quieter. Uses the variables defined in site.css. */
+.dash{background:#f3efe3}
+.dash-header{background:var(--ivory);border-bottom:3px solid var(--gold)}
+.dash-row{display:flex;align-items:center;justify-content:space-between;min-height:72px}
+.dash .brand-logo{height:52px}
+.owner-tag{font-family:var(--sans);font-size:.7rem;background:var(--gold);color:var(--navy);border-radius:999px;padding:3px 10px;margin-left:4px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.dash-row .link-btn{color:var(--navy);font-weight:700}
+.dash-nav{background:var(--navy)}
+.dash-nav-inner{display:flex;gap:4px;overflow-x:auto;padding-top:6px;padding-bottom:6px}
+.dash-nav a{color:#ffffff;text-decoration:none;padding:8px 16px;border-radius:999px;white-space:nowrap;font-weight:600;min-height:40px;display:inline-flex;align-items:center}
+.dash-nav a:hover{background:rgba(255,255,255,.14);color:#ffffff}
+.dash-main{padding-top:22px;padding-bottom:48px}
+.dash h1{margin:0 0 12px}
+.dash h2{margin:20px 0 10px;font-size:1.15rem}
+.narrow-box{max-width:420px;margin:24px auto}
+.msgs{list-style:none;margin:0 0 16px;padding:0}
+.msg{padding:10px 14px;border-radius:10px;margin-bottom:6px;background:#ffffff;border:1px solid var(--line)}
+.msg.success{background:#eaf6ee;border-color:#9ccaa8}
+.msg.error{background:#fdecec;border-color:var(--danger);color:var(--danger)}
+.msg.warning{background:var(--gold-soft);border-color:var(--gold)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.stat{display:flex;flex-direction:column;gap:4px;padding:14px;border-radius:var(--radius);background:#ffffff;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.stat:hover{border-color:var(--gold);color:var(--ink)}
+.stat .n{font-family:var(--serif);font-size:1.8rem;font-weight:800;color:var(--navy)}
+.stat.alert{border-color:var(--danger);background:#fff3f3}
+.stat.alert .n{color:var(--danger)}
+.stat.warn-card{border-color:var(--gold);background:#fff9e6}
+.stat.good .n{color:#1f7a3d}
+
+.table-wrap{overflow-x:auto;background:#ffffff;border:1px solid var(--line);border-radius:var(--radius)}
+.tbl{width:100%;border-collapse:collapse;min-width:520px}
+.tbl th,.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:#faf6ea}
+.tbl .num{text-align:right;white-space:nowrap}
+.tbl tfoot .grand td{font-weight:800;border-top:2px solid var(--navy)}
+.tbl form{margin:0}
+
+.st{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.78rem;font-weight:700;background:#e8e4d6;color:#444;white-space:nowrap}
+.st-new,.st-pending,.st-sending{background:#fff1c9;color:#7a5a00}
+.st-confirmed,.st-sent{background:#dbeafe;color:#1d4ed8}
+.st-preparing{background:#fde9c8;color:#8a4b00}
+.st-out_for_delivery,.st-delivered,.st-read{background:#dcf2f4;color:#0e6470}
+.st-completed{background:#dcf3e2;color:#1f6b36}
+.st-cancelled,.st-failed,.st-delivery_failed,.st-gave_up{background:#fbdcdc;color:#9b1c1c}
+.st-skipped{background:#e8e4d6;color:#444}
+
+.two-col{display:grid;gap:16px;margin-bottom:16px}
+@media(min-width:800px){.two-col{grid-template-columns:1fr 1fr}}
+.dash .panel{margin-bottom:16px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.actions form{margin:0}
+.cancel-form{margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
+.btn-danger{background:var(--danger);border-color:var(--danger);margin-top:8px}
+.timeline{list-style:none;margin:0;padding:0}
+.timeline li{padding:6px 0;border-bottom:1px solid var(--line)}
+
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.filter-bar input,.filter-bar select{width:auto;flex:1 1 160px}
+.field{margin-bottom:12px}
+.dash input[type=number],.dash input[type=date],.dash input[type=file]{width:100%;padding:10px 12px;border:1px solid #cdbf93;border-radius:10px;font:inherit;background:#ffffff}
+.dash .tbl input[type=text],.dash .tbl input[type=number]{min-width:90px}
+.has-error input,.has-error select,.has-error textarea{border-color:var(--danger)}
+.sr{position:absolute;left:-9999px}
