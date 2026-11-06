@@ -17,3 +17,5 @@ _backup*/
 _product_photos_ready/
 audit*.txt
 card_markup.txt
+_site_preview/
+models_dump.txt

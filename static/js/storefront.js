@@ -210,3 +210,46 @@
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',go);}else{go();}
 })();
+
+
+/* patch-staff */
+(function(){
+  function build(){
+    if(document.querySelector('.rc-staff-drawer')) return;
+    var tab=document.createElement('button');
+    tab.type='button'; tab.className='rc-staff-tab'; tab.textContent='STAFF';
+    tab.setAttribute('aria-label','Open staff portal'); tab.setAttribute('aria-expanded','false');
+    var veil=document.createElement('div'); veil.className='rc-staff-veil';
+    var d=document.createElement('aside'); d.className='rc-staff-drawer';
+    d.setAttribute('role','dialog'); d.setAttribute('aria-label','Staff portal'); d.setAttribute('aria-hidden','true');
+    d.innerHTML=
+      '<h2>Staff portal</h2><p class="rc-sub">For Royal Cream Dairy team members.</p>'+
+      '<a class="rc-staff-link" href="/owner/login/"><span class="rc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#03193c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h3"/></svg></span><span><strong>Owner dashboard</strong><small>Orders, stock, products, reports</small></span></a>'+
+      '<a class="rc-staff-link" href="/django-admin/"><span class="rc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#03193c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span><strong>Admin panel</strong><small>Delivery zones and system settings</small></span></a>'+
+      '<button type="button" class="rc-staff-close">Close</button>';
+    document.body.appendChild(veil); document.body.appendChild(d); document.body.appendChild(tab);
+    var root=document.documentElement;
+    function open(){root.classList.add('rc-staff-open');d.setAttribute('aria-hidden','false');tab.setAttribute('aria-expanded','true');var a=d.querySelector('a');if(a)a.focus({preventScroll:true});}
+    function close(){root.classList.remove('rc-staff-open');d.setAttribute('aria-hidden','true');tab.setAttribute('aria-expanded','false');}
+    tab.addEventListener('click',open);
+    veil.addEventListener('click',close);
+    d.querySelector('.rc-staff-close').addEventListener('click',close);
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+    /* swipe: right opens, left closes */
+    var sx=0,sy=0,tracking=false;
+    document.addEventListener('touchstart',function(e){
+      if(e.touches.length!==1){tracking=false;return;}
+      var el=e.target;
+      if(el.closest && el.closest('input,textarea,select,[contenteditable]')){tracking=false;return;}
+      sx=e.touches[0].clientX; sy=e.touches[0].clientY; tracking=true;
+    },{passive:true});
+    document.addEventListener('touchend',function(e){
+      if(!tracking) return; tracking=false;
+      var t=e.changedTouches[0], dx=t.clientX-sx, dy=Math.abs(t.clientY-sy);
+      if(dy>45||Math.abs(dx)<70) return;
+      if(dx>0 && !root.classList.contains('rc-staff-open')) open();
+      else if(dx<0 && root.classList.contains('rc-staff-open')) close();
+    },{passive:true});
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',build);}else{build();}
+})();

@@ -246,3 +246,23 @@ a:hover>.rc-catimg,a:hover .rc-catimg{transform:scale(1.06) rotate(-2deg)}
 :where(div,article,li):has(> .card-media) :is(button,.btn)::after{content:" \2192"}
 :where(div,article,li):has(> .card-media) :is(button,.btn):hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(20,69,31,.36)!important}
 :where(div,article,li):has(> .card-media){padding-bottom:20px}
+
+
+/* ---- patch-staff ---- */
+.rc-staff-tab{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:900;background:#03193c;color:#fff;border:0;border-radius:0 12px 12px 0;padding:14px 7px;font:600 11px/1 system-ui,sans-serif;letter-spacing:.14em;writing-mode:vertical-rl;text-orientation:mixed;cursor:pointer;opacity:.55;box-shadow:0 6px 16px rgba(3,25,60,.25);transition:opacity .2s,padding .2s}
+.rc-staff-tab:hover,.rc-staff-tab:focus-visible{opacity:1;padding-left:11px}
+.rc-staff-veil{position:fixed;inset:0;z-index:1000;background:rgba(3,25,60,.45);opacity:0;pointer-events:none;transition:opacity .28s ease}
+.rc-staff-drawer{position:fixed;top:0;left:0;bottom:0;z-index:1001;width:min(320px,86vw);background:#fffdf8;box-shadow:12px 0 40px rgba(3,25,60,.28);transform:translateX(-102%);transition:transform .3s cubic-bezier(.22,.8,.3,1);display:flex;flex-direction:column;padding:28px 22px;overflow-y:auto;visibility:hidden}
+.rc-staff-open .rc-staff-drawer{transform:none;visibility:visible}
+.rc-staff-open .rc-staff-veil{opacity:1;pointer-events:auto}
+.rc-staff-open .rc-staff-tab{opacity:0;pointer-events:none}
+.rc-staff-drawer h2{font-family:Georgia,'Times New Roman',serif;color:#03193c;margin:0 0 4px;font-size:1.5rem}
+.rc-staff-drawer .rc-sub{color:#5b6577;margin:0 0 22px;font-size:.92rem}
+.rc-staff-link{display:flex;align-items:center;gap:14px;padding:16px;margin-bottom:12px;border-radius:18px;background:#fff;box-shadow:0 8px 22px rgba(3,25,60,.10);text-decoration:none;color:#03193c;transition:transform .2s,box-shadow .2s}
+.rc-staff-link:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(3,25,60,.16)}
+.rc-staff-link .rc-ico{flex:0 0 44px;height:44px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#f6ecd2,#ead9a8)}
+.rc-staff-link .rc-ico svg{width:22px;height:22px}
+.rc-staff-link strong{display:block;font-size:1rem}
+.rc-staff-link small{color:#5b6577}
+.rc-staff-close{margin-top:auto;background:none;border:0;color:#5b6577;font:inherit;padding:12px;cursor:pointer;text-align:center}
+@media(prefers-reduced-motion:reduce){.rc-staff-drawer,.rc-staff-veil{transition:none}}
