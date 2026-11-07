@@ -253,3 +253,18 @@
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',build);}else{build();}
 })();
+
+
+/* patch-toc: contents list for the privacy page (wording is not changed) */
+(function(){
+  function go(){
+    var p=document.querySelector('main.prose'); if(!p||p.querySelector('.rc-toc')) return;
+    var hs=p.querySelectorAll('h2'); if(hs.length<3) return;
+    var box=document.createElement('nav'); box.className='rc-toc'; box.setAttribute('aria-label','Contents');
+    var html='<strong>Contents</strong><ol>';
+    [].forEach.call(hs,function(h,i){ h.id='sec-'+(i+1); html+='<li><a href="#sec-'+(i+1)+'">'+h.textContent+'</a></li>'; });
+    box.innerHTML=html+'</ol>';
+    var first=p.querySelector('p'); if(first&&first.parentNode) first.parentNode.insertBefore(box,first.nextSibling);
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',go);}else{go();}
+})();

@@ -18,6 +18,13 @@
         <span class="brand-name">Royal Cream <small>Dairy</small></span>
         <span class="owner-tag">Owner</span>
       </a>
+      {% if user.is_authenticated and perms.orders.view_order or perms.catalogue.view_product %}
+      <div class="dash-search" role="search">
+        <input id="dash-search-input" class="dash-search-input" type="search" placeholder="Search orders, customers, products" autocomplete="off" spellcheck="false" aria-label="Search" aria-expanded="false" data-url="{% url 'owner_search' %}">
+        <kbd class="search-kbd">Ctrl K</kbd>
+        <div id="dash-search-results" class="search-results" hidden></div>
+      </div>
+      {% endif %}
       {% if user.is_authenticated %}
       <form method="post" action="{% url 'owner_logout' %}">{% csrf_token %}<button class="link-btn" type="submit">Log out</button></form>
       {% endif %}
@@ -39,5 +46,6 @@
     {% if messages %}<ul class="msgs">{% for m in messages %}<li class="msg {{ m.tags }}">{{ m }}</li>{% endfor %}</ul>{% endif %}
     {% block content %}{% endblock %}
   </main>
+  <script src="{% static 'js/dashboard.js' %}" defer></script>
 </body>
 </html>

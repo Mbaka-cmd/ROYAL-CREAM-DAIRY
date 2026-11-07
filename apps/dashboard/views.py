@@ -7,13 +7,16 @@ from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
 from django.db.models import F, IntegerField, Q, Value
 from django.db.models.functions import Coalesce
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
+from django_ratelimit.decorators import ratelimit
 
 from apps.catalogue.models import Product, ProductVariant
+from apps.customers.models import Customer
 from apps.customers.services import InvalidPhone, normalize_ke_phone
 from apps.inventory import services as inventory
 from apps.inventory.models import StockMovement
@@ -51,15 +54,89 @@ def _page(request, queryset, per_page):
 @staff_view()
 def home(request):
     user = request.user
-    context = {"orders": None, "stock": None, "notifications": None, "recent_orders": []}
+    hour = timezone.localtime().hour
+    greeting = "Good morning" if hour < 12 else "Good afternoon" if hour < 18 else "Good evening"
+    context = {
+        "orders": None, "stock": None, "notifications": None, "recent_orders": [],
+        "kpis": None, "chart": None, "attention": [], "greeting": greeting,
+        "today": timezone.localdate(),
+    }
+    attention = []
+    orders_url = reverse("owner_orders")
     if user.has_perm("orders.view_order"):
-        context["orders"] = selectors.order_counts()
+        counts = selectors.order_counts()
+        context["orders"] = counts
         context["recent_orders"] = Order.objects.select_related("customer")[:8]
+        context["kpis"] = selectors.kpis()
+        context["chart"] = selectors.sales_week()
+        stale = selectors.stale_new_count()
+        if stale:
+            attention.append(("alert", f"{stale} new order(s) waiting more than 15 minutes", f"{orders_url}?status=NEW"))
+        if counts["delivery_failed"]:
+            attention.append(("alert", f"{counts['delivery_failed']} failed delivery(ies) to follow up", f"{orders_url}?status=DELIVERY_FAILED"))
     if user.has_perm("inventory.view_inventory"):
-        context["stock"] = selectors.stock_counts()
+        stock = selectors.stock_counts()
+        context["stock"] = stock
+        if stock["out"]:
+            attention.append(("alert", f"{stock['out']} product(s) out of stock", reverse("owner_inventory") + "?filter=out"))
+        if stock["low"]:
+            attention.append(("warn", f"{stock['low']} product(s) running low", reverse("owner_inventory") + "?filter=low"))
     if user.has_perm("notifications.view_notification"):
-        context["notifications"] = selectors.notification_counts()
+        notes = selectors.notification_counts()
+        context["notifications"] = notes
+        if notes["needs_review"]:
+            attention.append(("alert", f"{notes['needs_review']} WhatsApp message(s) need review", reverse("owner_notifications") + "?status=review"))
+        if notes["unsent"]:
+            attention.append(("warn", f"{notes['unsent']} WhatsApp message(s) unsent for 15+ minutes", reverse("owner_notifications") + "?status=pending"))
+    context["attention"] = [{"level": l, "text": x, "url": u} for l, x, u in attention]
     return render(request, "dashboard/home.html", context)
+
+
+# ---------------- instant search ----------------
+@staff_view()
+@ratelimit(key="user", rate="120/m", method="GET", block=True)
+def search(request):
+    q = request.GET.get("q", "").strip()[:50]
+    out = {"orders": [], "customers": [], "products": []}
+    if len(q) < 2:
+        return JsonResponse(out)
+    user = request.user
+    can_orders = user.has_perm("orders.view_order")
+    phone_part = q.lstrip("0+") if q.replace("+", "").isdigit() else ""
+    if can_orders:
+        cond = Q(reference__icontains=q) | Q(customer__name__icontains=q) | Q(customer__phone__icontains=q)
+        if phone_part:
+            cond |= Q(customer__phone__icontains=phone_part)
+        try:
+            cond |= Q(customer__phone=normalize_ke_phone(q))
+        except InvalidPhone:
+            pass
+        for o in Order.objects.select_related("customer").filter(cond)[:6]:
+            out["orders"].append({
+                "title": o.reference,
+                "sub": f"{o.customer.name} - {o.customer.phone} - KSh {int(o.total)}",
+                "badge": o.get_status_display(),
+                "url": reverse("owner_order_detail", args=[o.pk]),
+            })
+    if can_orders and user.has_perm("customers.view_customer"):
+        ccond = Q(name__icontains=q) | Q(phone__icontains=q)
+        if phone_part:
+            ccond |= Q(phone__icontains=phone_part)
+        for c in Customer.objects.filter(ccond)[:5]:
+            out["customers"].append({
+                "title": c.name,
+                "sub": c.phone,
+                "badge": "",
+                "url": reverse("owner_orders") + "?" + urlencode({"q": c.phone}),
+            })
+    if user.has_perm("catalogue.view_product"):
+        for p in Product.objects.filter(name__icontains=q)[:5]:
+            if user.has_perm("catalogue.change_product"):
+                url = reverse("owner_product_update", args=[p.pk])
+            else:
+                url = reverse("owner_products") + "?" + urlencode({"q": p.name})
+            out["products"].append({"title": p.name, "sub": "Product", "badge": "Active" if p.is_active else "Hidden", "url": url})
+    return JsonResponse(out)
 
 
 # ---------------- orders ----------------

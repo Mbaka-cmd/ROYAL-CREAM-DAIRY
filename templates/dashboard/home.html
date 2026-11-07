@@ -1,19 +1,74 @@
 {% extends "dashboard/base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<h1>Today at a glance</h1>
+<h1>Business overview</h1>
+<p class="dash-sub">{{ greeting }}, {{ user.first_name|default:user.username }}. {{ today|date:"l, j F Y" }}</p>
 
-{% if orders %}
-<h2>Orders</h2>
-<div class="cards">
-  <a class="stat{% if orders.new %} alert{% endif %}" href="{% url 'owner_orders' %}?status=NEW"><span class="n">{{ orders.new }}</span><span>Awaiting confirmation</span></a>
-  <a class="stat" href="{% url 'owner_orders' %}?status=CONFIRMED"><span class="n">{{ orders.confirmed }}</span><span>Confirmed</span></a>
-  <a class="stat" href="{% url 'owner_orders' %}?status=PREPARING"><span class="n">{{ orders.preparing }}</span><span>Preparing</span></a>
-  <a class="stat" href="{% url 'owner_orders' %}?status=OUT_FOR_DELIVERY"><span class="n">{{ orders.out_for_delivery }}</span><span>Out for delivery</span></a>
-  <a class="stat{% if orders.delivery_failed %} alert{% endif %}" href="{% url 'owner_orders' %}?status=DELIVERY_FAILED"><span class="n">{{ orders.delivery_failed }}</span><span>Delivery failed</span></a>
-  <a class="stat good" href="{% url 'owner_orders' %}?status=COMPLETED"><span class="n">{{ orders.completed_today }}</span><span>Completed today</span></a>
+{% if kpis %}
+<div class="kpi-grid">
+  <div class="kpi">
+    <span class="kpi-label">Sales today</span>
+    <span class="kpi-value">KSh {{ kpis.sales.value|floatformat:"-2" }}</span>
+    <span class="trend {{ kpis.sales.trend.dir }}">{{ kpis.sales.trend.label }}</span>
+  </div>
+  <div class="kpi">
+    <span class="kpi-label">Orders today</span>
+    <span class="kpi-value">{{ kpis.orders.value }}</span>
+    <span class="trend {{ kpis.orders.trend.dir }}">{{ kpis.orders.trend.label }}</span>
+  </div>
+  <div class="kpi">
+    <span class="kpi-label">Average order</span>
+    <span class="kpi-value">KSh {{ kpis.avg.value|floatformat:"0" }}</span>
+    <span class="trend {{ kpis.avg.trend.dir }}">{{ kpis.avg.trend.label }}</span>
+  </div>
+  <a class="kpi{% if orders.new %} kpi-alert{% endif %}" href="{% url 'owner_orders' %}?status=NEW">
+    <span class="kpi-label">Needs action</span>
+    <span class="kpi-value">{{ orders.new }}</span>
+    <span class="trend flat">New orders to confirm</span>
+  </a>
 </div>
 {% endif %}
+
+{% if orders %}
+<h2>Order pipeline</h2>
+<div class="board">
+  <a class="board-col board-new{% if orders.new %} board-hot{% endif %}" href="{% url 'owner_orders' %}?status=NEW"><span class="board-count">{{ orders.new }}</span><span class="board-label">Awaiting confirmation</span></a>
+  <a class="board-col board-confirmed" href="{% url 'owner_orders' %}?status=CONFIRMED"><span class="board-count">{{ orders.confirmed }}</span><span class="board-label">Confirmed</span></a>
+  <a class="board-col board-preparing" href="{% url 'owner_orders' %}?status=PREPARING"><span class="board-count">{{ orders.preparing }}</span><span class="board-label">Preparing</span></a>
+  <a class="board-col board-out" href="{% url 'owner_orders' %}?status=OUT_FOR_DELIVERY"><span class="board-count">{{ orders.out_for_delivery }}</span><span class="board-label">Out for delivery</span></a>
+  <a class="board-col board-done" href="{% url 'owner_orders' %}?status=COMPLETED"><span class="board-count">{{ orders.completed_today }}</span><span class="board-label">Completed today</span></a>
+  <a class="board-col board-failed{% if orders.delivery_failed %} board-hot{% endif %}" href="{% url 'owner_orders' %}?status=DELIVERY_FAILED"><span class="board-count">{{ orders.delivery_failed }}</span><span class="board-label">Delivery failed</span></a>
+</div>
+{% endif %}
+
+<div class="dash-two">
+  {% if chart %}
+  <section class="card-panel">
+    <div class="panel-head"><h2>Sales, last 7 days</h2><span class="muted small">KSh {{ chart.total|floatformat:"0" }} from {{ chart.orders }} delivered order{{ chart.orders|pluralize }}</span></div>
+    <svg class="chart" viewBox="0 0 700 215" role="img" aria-label="Sales for the last 7 days">
+      <line class="axis" x1="20" y1="180" x2="690" y2="180"/>
+      {% for b in chart.bars %}
+      <rect class="bar{% if b.today %} bar-today{% endif %}" x="{{ b.x }}" y="{{ b.y }}" width="60" height="{{ b.h }}" rx="6"><title>{{ b.label }}: KSh {{ b.value }} ({{ b.orders }} orders)</title></rect>
+      {% if b.value %}<text class="axis-label val" x="{{ b.cx }}" y="{{ b.vy }}" text-anchor="middle">{{ b.value }}</text>{% endif %}
+      <text class="axis-label" x="{{ b.cx }}" y="203" text-anchor="middle">{{ b.label }}</text>
+      {% endfor %}
+    </svg>
+  </section>
+  {% endif %}
+
+  {% if orders or stock or notifications %}
+  <section class="card-panel">
+    <div class="panel-head"><h2>Needs attention</h2></div>
+    <ul class="attention-list">
+      {% for a in attention %}
+      <li class="att att-{{ a.level }}"><a href="{{ a.url }}">{{ a.text }}</a></li>
+      {% empty %}
+      <li class="att att-ok">All clear. Nothing needs action right now.</li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</div>
 
 {% if stock %}
 <h2>Stock</h2>
@@ -35,7 +90,7 @@
 <h2>Latest orders</h2>
 <div class="table-wrap">
 <table class="tbl">
-  <thead><tr><th>Order</th><th>Customer</th><th>Area</th><th class="num">Total</th><th>Status</th></tr></thead>
+  <thead><tr><th>Order</th><th>Customer</th><th>Area</th><th class="num">Total</th><th>Status</th><th>Placed</th><th></th></tr></thead>
   <tbody>
   {% for o in recent_orders %}
   <tr>
@@ -44,9 +99,13 @@
     <td>{{ o.delivery_area }}</td>
     <td class="num">KSh {{ o.total|floatformat:"-2" }}</td>
     <td><span class="st st-{{ o.status|lower }}">{{ o.get_status_display }}</span></td>
+    <td class="small muted">{{ o.created_at|timesince }} ago</td>
+    <td class="num">{% if o.status == "NEW" and perms.orders.change_order %}
+      <form method="post" action="{% url 'owner_order_status' o.pk %}" class="inline-form">{% csrf_token %}<input type="hidden" name="status" value="CONFIRMED"><button class="btn btn-small" type="submit">Confirm</button></form>
+    {% endif %}</td>
   </tr>
   {% empty %}
-  <tr><td colspan="5" class="muted">No orders yet.</td></tr>
+  <tr><td colspan="7" class="muted">No orders yet.</td></tr>
   {% endfor %}
   </tbody>
 </table>

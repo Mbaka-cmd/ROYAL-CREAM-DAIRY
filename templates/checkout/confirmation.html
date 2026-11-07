@@ -3,16 +3,24 @@
 {% block head_extra %}<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer">{% endblock %}
 {% block body_attrs %} data-clear-cart="1"{% endblock %}
 {% block content %}
-<main class="wrap page narrow">
+<main class="wrap page narrow rc-confirm">
   {% if GA_ID %}{{ ga_purchase|json_script:"ga-purchase" }}{% endif %}
-  <div class="panel">
+  <div class="panel rc-confirm-card">
     <div class="confirm-head">
       <svg class="tick" viewBox="0 0 52 52" aria-hidden="true"><circle class="tick-circle" cx="26" cy="26" r="24"/><path class="tick-check" d="M14 27l8 8 16-17"/></svg>
       <h1>Thank you, {{ order.customer.name }}!</h1>
       <p>Your order has been received. Our team will confirm your order shortly.</p>
     </div>
-    <p class="ref">Order reference: <strong>{{ order.reference }}</strong></p>
-    <p class="muted">Status: {{ order.get_status_display }}</p>
+    <p class="ref rc-ref">Order reference <strong>{{ order.reference }}</strong></p>
+
+    <ol class="rc-track" data-status="{{ order.status|lower }}" aria-label="Order progress">
+      <li><span>1</span>Received</li>
+      <li><span>2</span>Confirmed</li>
+      <li><span>3</span>Preparing</li>
+      <li><span>4</span>Out for delivery</li>
+      <li><span>5</span>Delivered</li>
+    </ol>
+    <p class="muted rc-status">Status: {{ order.get_status_display }}</p>
 
     <table class="items">
       <thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Total</th></tr></thead>
@@ -33,8 +41,10 @@
       </tfoot>
     </table>
 
-    <p><strong>Delivery to:</strong> {{ order.delivery_area }}, {{ order.delivery_address }}</p>
-    <p><strong>Payment:</strong> {{ order.get_payment_method_display }}</p>
+    <div class="rc-info">
+      <p><strong>Delivery to</strong><br>{{ order.delivery_area }}, {{ order.delivery_address }}</p>
+      <p><strong>Payment</strong><br>{{ order.get_payment_method_display }}</p>
+    </div>
     <div class="confirm-actions">
       <a class="btn btn-outline" href="{% url 'product_list' %}">Continue shopping</a>
       {% if PUBLIC_WHATSAPP_URL %}<a class="btn" href="{{ PUBLIC_WHATSAPP_URL }}" data-track="whatsapp" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>Message us on WhatsApp</a>{% endif %}

@@ -9,5 +9,13 @@
     <input type="hidden" name="next" value="{{ next }}">
     <button class="btn btn-block" type="submit">Log in</button>
   </form>
+  {% if demo_login_enabled %}
+  <p class="login-or"><span>or</span></p>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="btn btn-block btn-outline" type="submit" name="demo_login" value="1">Enter demo as Owner</button>
+  </form>
+  {% endif %}
 </div>
 {% endblock %}

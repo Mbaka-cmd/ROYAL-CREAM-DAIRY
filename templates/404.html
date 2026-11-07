@@ -1,10 +1,16 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Page not found | Royal Cream Dairy{% endblock %}
 {% block head_extra %}<meta name="robots" content="noindex">{% endblock %}
 {% block content %}
-<main class="wrap page narrow">
-  <h1>Page not found</h1>
-  <p>We could not find that page.</p>
-  <p><a class="btn" href="{% url 'product_list' %}">Browse products</a></p>
+<main class="wrap page narrow rc-404">
+  <img class="rc-404-logo" src="{% static 'images/logo-header.webp' %}" alt="" width="120" height="95">
+  <p class="rc-404-code">404</p>
+  <h1>We could not find that page</h1>
+  <p>The link may be old, or the page may have moved. Your cart is safe.</p>
+  <p class="rc-404-actions">
+    <a class="btn" href="{% url 'product_list' %}">Browse products</a>
+    <a class="btn btn-outline" href="{% url 'home' %}">Back to home</a>
+  </p>
 </main>
 {% endblock %}

@@ -85,3 +85,75 @@ def top_products(start, end, limit=10):
         .annotate(units=Sum("quantity"), revenue=Sum("line_total"))
         .order_by("-units", "product_name")[:limit]
     )
+
+# ---------- overview additions ----------
+def _trend(cur, prev):
+    cur = float(cur or 0)
+    prev = float(prev or 0)
+    if prev == 0:
+        if cur == 0:
+            return {"dir": "flat", "label": "No data yesterday"}
+        return {"dir": "up", "label": "New vs yesterday"}
+    pct = round((cur - prev) / prev * 100)
+    if pct == 0:
+        return {"dir": "flat", "label": "Same as yesterday"}
+    return {"dir": "up" if pct > 0 else "down", "label": f"{pct:+d}% vs yesterday"}
+
+
+def _placed(day):
+    agg = (
+        Order.objects.filter(created_at__date=day)
+        .exclude(status=S.CANCELLED)
+        .aggregate(n=Count("id"), total=Sum("total"))
+    )
+    n = agg["n"] or 0
+    total = agg["total"] or 0
+    return n, (total / n if n else 0)
+
+
+def kpis():
+    today = timezone.localdate()
+    yday = today - timedelta(days=1)
+    sales_t = sales_totals(today, today)["revenue"]
+    sales_y = sales_totals(yday, yday)["revenue"]
+    n_t, avg_t = _placed(today)
+    n_y, avg_y = _placed(yday)
+    return {
+        "sales": {"value": sales_t, "trend": _trend(sales_t, sales_y)},
+        "orders": {"value": n_t, "trend": _trend(n_t, n_y)},
+        "avg": {"value": avg_t, "trend": _trend(avg_t, avg_y)},
+    }
+
+
+def stale_new_count(minutes=15):
+    cutoff = timezone.now() - timedelta(minutes=minutes)
+    return Order.objects.filter(status=S.NEW, created_at__lt=cutoff).count()
+
+
+def sales_week():
+    today = timezone.localdate()
+    start = today - timedelta(days=6)
+    rows = {r["day"]: r for r in sales_by_day(start, today)}
+    days = [start + timedelta(days=i) for i in range(7)]
+    vals = [float(rows[d]["revenue"] or 0) if d in rows else 0.0 for d in days]
+    counts = [rows[d]["orders"] if d in rows else 0 for d in days]
+    top = max(vals) or 1
+    bars = []
+    for i, d in enumerate(days):
+        h = int(vals[i] / top * 150)
+        if vals[i] > 0 and h < 4:
+            h = 4
+        bars.append(
+            {
+                "x": 30 + i * 95,
+                "cx": 60 + i * 95,
+                "y": 180 - h,
+                "vy": 172 - h,
+                "h": h,
+                "label": d.strftime("%a"),
+                "value": int(vals[i]),
+                "orders": counts[i],
+                "today": d == today,
+            }
+        )
+    return {"bars": bars, "total": sum(vals), "orders": sum(counts)}
