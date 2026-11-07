@@ -429,3 +429,23 @@ def reports(request):
             "top": selectors.top_products(start, end),
         },
     )
+
+# ---------------- header bell: new orders ----------------
+@staff_view("orders.view_order")
+@ratelimit(key="user", rate="60/m", method="GET", block=True)
+def alerts(request):
+    from django.utils.timesince import timesince
+
+    qs = Order.objects.filter(status=Order.Status.NEW).select_related("customer").order_by("-created_at")
+    count = qs.count()
+    now = timezone.now()
+    items = [
+        {
+            "title": o.reference,
+            "sub": f"{o.customer.name} - KSh {int(o.total)} - {o.delivery_area}",
+            "age": timesince(o.created_at, now).split(",")[0] + " ago",
+            "url": reverse("owner_order_detail", args=[o.pk]),
+        }
+        for o in qs[:8]
+    ]
+    return JsonResponse({"count": count, "items": items, "all_url": reverse("owner_orders") + "?status=NEW"})

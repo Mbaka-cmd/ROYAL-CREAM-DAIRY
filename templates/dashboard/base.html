@@ -25,9 +25,24 @@
         <div id="dash-search-results" class="search-results" hidden></div>
       </div>
       {% endif %}
+      <div class="dash-actions">
+      {% if perms.orders.view_order %}
+      <div class="dash-bell">
+        <button id="dash-bell-btn" class="bell-btn" type="button" aria-label="New orders" aria-expanded="false" data-url="{% url 'owner_alerts' %}">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span id="dash-bell-count" class="bell-count" hidden>0</span>
+        </button>
+        <div id="dash-bell-panel" class="bell-panel" hidden></div>
+      </div>
+      {% endif %}
+      <a class="dash-site-link" href="{% url 'home' %}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+        View website
+      </a>
       {% if user.is_authenticated %}
       <form method="post" action="{% url 'owner_logout' %}">{% csrf_token %}<button class="link-btn" type="submit">Log out</button></form>
       {% endif %}
+      </div>
     </div>
     {% if user.is_authenticated %}
     <nav class="dash-nav" aria-label="Dashboard">
