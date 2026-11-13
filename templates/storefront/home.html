@@ -18,12 +18,12 @@
 </section>
 
 <section class="wrap trust" aria-label="Why choose Royal Cream Dairy">
-  <div class="trust-grid">
-    <div class="trust-item"><svg class="icon" aria-hidden="true"><use href="#i-leaf"/></svg><span>Fresh &amp; natural dairy</span></div>
-    <div class="trust-item"><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg><span>Delivery in Chuka and around</span></div>
-    <div class="trust-item"><svg class="icon" aria-hidden="true"><use href="#i-cash"/></svg><span>Pay on delivery</span></div>
-    <div class="trust-item"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg><span>Proudly local</span></div>
-  </div>
+  <ul class="hero-trust">
+  <li><span class="ht-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Fresh &amp; natural dairy</li>
+  <li><span class="ht-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>Delivery within Chuka Town</li>
+  <li><span class="ht-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>Pay on delivery</li>
+  <li><span class="ht-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>Proudly local</li>
+</ul>
 </section>
 
 <main class="wrap page">
@@ -33,7 +33,7 @@
     <div class="cat-grid">
       {% for c in categories %}
       <a class="cat-tile" href="{% url 'product_list' %}?category={{ c.slug }}">
-        <svg class="icon" aria-hidden="true"><use href="#{% if 'milk' in c.slug %}i-milk{% elif 'butter' in c.slug %}i-butter{% else %}i-cup{% endif %}"/></svg>
+        {% if 'mala' in c.slug %}<img class="rc-catimg" src="/static/images/cat/mala.jpg" alt="">{% else %}<svg class="icon" aria-hidden="true"><use href="#{% if 'milk' in c.slug %}i-milk{% elif 'butter' in c.slug %}i-butter{% else %}i-cup{% endif %}"/></svg>{% endif %}
         <span>{{ c.name }}</span>
       </a>
       {% endfor %}
@@ -53,8 +53,8 @@
   </section>
 
   <section class="band reveal">
-    <h2>Delivery in Chuka and around</h2>
-    <p>We deliver in Chuka town and the surrounding areas. Enter your area and address at checkout, and we will confirm your order and delivery with you.</p>
+    <h2>Delivery within Chuka Town</h2>
+    <p>We deliver within about 2 km of Chuka Town Centre. Choose your nearest landmark and enter your address at checkout, and we will confirm your order and delivery with you.</p>
     <div class="band-actions">
       <a class="btn btn-gold" href="{% url 'product_list' %}">Browse products</a>
       {% if PUBLIC_WHATSAPP_URL %}<a class="btn btn-ghost-light" href="{{ PUBLIC_WHATSAPP_URL }}" data-track="whatsapp" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>Ask us on WhatsApp</a>{% endif %}

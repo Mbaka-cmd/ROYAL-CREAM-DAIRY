@@ -21,3 +21,8 @@ _site_preview/
 models_dump.txt
 *_dump.txt
 MALA 1L.png
+
+# local / private
+*.sqlite3
+_backup*
+config/settings/tunnel.py

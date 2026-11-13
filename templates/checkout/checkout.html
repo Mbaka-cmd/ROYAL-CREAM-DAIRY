@@ -40,11 +40,11 @@
         <option value="{{ z.id }}"{% if form.delivery_zone == z.id|stringformat:"s" %} selected{% endif %}>{{ z.name }}{% if z.fee > 0 %} (delivery KSh {{ z.fee|floatformat:"-2" }}){% else %} (free delivery){% endif %}</option>
         {% endfor %}
       </select>
-      <p class="muted small">We deliver in Chuka and the surrounding areas.</p>
+      <p class="muted small">We deliver within about 2 km of Chuka Town Centre. Choose your nearest landmark and add your address.</p>
       {% else %}
       <label for="f-area">Delivery area</label>
       <input id="f-area" name="delivery_area" type="text" required maxlength="100" placeholder="Your area, estate or village" value="{{ form.delivery_area }}">
-      <p class="muted small">We deliver in Chuka and the surrounding areas.</p>
+      <p class="muted small">We deliver within about 2 km of Chuka Town Centre. Choose your nearest landmark and add your address.</p>
       {% endif %}
 
       <label for="f-address">Specific address or landmark</label>

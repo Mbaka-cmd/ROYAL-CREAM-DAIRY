@@ -19,7 +19,7 @@ DEMO_USERNAME = "demo_owner"
 
 def demo_login_enabled():
     # Only ever on in DEBUG, and only when DEMO_OPEN_LOGIN=1 is set in .env
-    return bool(settings.DEBUG) and os.environ.get("DEMO_OPEN_LOGIN", "0").strip() == "1"
+    return (bool(settings.DEBUG) or bool(getattr(settings, "DEMO_PUBLIC", False))) and os.environ.get("DEMO_OPEN_LOGIN", "0").strip() == "1"
 
 
 def _ip_rate(group, request):

@@ -196,3 +196,27 @@ input[type=checkbox]{accent-color:var(--navy)}
   .reveal-hidden{opacity:1;transform:none}
   .hero-bg{transform:none!important}
 }
+
+/* ---- patch-fonts ---- */
+@font-face{font-family:"Gelasio";font-style:normal;font-weight:400 700;font-display:swap;src:url("../fonts/gelasio-latin.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400 800;font-display:swap;src:url("../fonts/inter-latin.woff2") format("woff2")}
+:root{--sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--serif:"Gelasio",Georgia,"Times New Roman",serif}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3,.brand-name,.hero h1,.rc-404-code{font-family:var(--serif)}
+
+/* ---- card polish override (13 Nov) ---- */
+.card{display:flex;flex-direction:column}
+.card-media img{object-fit:cover;object-position:center top}
+.card-body{display:flex;flex-direction:column;flex:1;padding:18px 20px 20px}
+.card-body .variants{margin-top:auto;padding-top:14px}
+.card .variant{display:flex;align-items:center;gap:10px;padding:8px 0}
+.card .variant-name{flex:1;font-size:.95rem}
+.card .variant .price{font-weight:700;white-space:nowrap}
+.card .variant .btn,
+.card .variant .btn-small{
+  width:auto;min-width:0;flex:0 0 auto;
+  padding:7px 16px;min-height:0;height:auto;
+  font-size:.85rem;line-height:1.2;border-radius:999px;box-shadow:none
+}
+.btn-order{cursor:pointer;-webkit-tap-highlight-color:transparent}

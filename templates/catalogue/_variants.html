@@ -1,12 +1,12 @@
-﻿<ul class="variants">
+<ul class="variants">
   {% for v in product.variants.all %}
   <li class="variant">
     <span class="variant-name">{{ v.name }}</span>
     <span class="price">KSh {{ v.price|floatformat:"-2" }}</span>
     {% if v.available > 0 %}
-    <button type="button" class="btn btn-small js-add" data-variant="{{ v.id }}" data-max="{{ v.available }}" data-name="{{ product.name }} {{ v.name }}" data-price="{{ v.price|stringformat:'.2f' }}">Order</button>
+    <button type="button" class="btn btn-small btn-order js-add" data-variant="{{ v.id }}" data-max="{{ v.available }}" data-name="{{ product.name }} {{ v.name }}" data-price="{{ v.price|stringformat:'.2f' }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg><span>Add to cart</span></button>
     {% else %}
-    <button type="button" class="btn btn-small" disabled>Out of stock</button>
+    <button type="button" class="btn btn-small btn-order" disabled>Out of stock</button>
     {% endif %}
   </li>
   {% endfor %}

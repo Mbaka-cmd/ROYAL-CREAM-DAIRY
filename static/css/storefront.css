@@ -1,4 +1,4 @@
-﻿/* Royal Cream Dairy: storefront polish layer. Loaded after site.css, so it extends and overrides it.
+/* Royal Cream Dairy: storefront polish layer. Loaded after site.css, so it extends and overrides it.
    The owner dashboard does not load this file. */
 :root{--shadow-sm:0 4px 14px rgba(3,25,60,.08);--shadow-md:0 14px 34px rgba(3,25,60,.16);--d:0ms}
 
@@ -309,3 +309,87 @@ a:hover>.rc-catimg,a:hover .rc-catimg{transform:scale(1.06) rotate(-2deg)}
 /* ---- patch-pages-fix ---- */
 .rc-confirm{padding-top:8px;padding-bottom:32px}
 .rc-404-logo{display:block;margin:0 auto 6px;width:120px;height:auto}
+
+
+/* ---- patch-mobile: phones show the same design as the laptop ---- */
+@media(max-width:759px){
+  .hero{display:block!important;min-height:0!important;padding-top:56.25vw!important}
+  .hero::after{display:none!important}
+  .hero-bg,.hero-bg-alt{inset:0 0 auto 0!important;height:56.25vw!important;transform:none!important;background-image:url("../images/hero-full.webp");background-size:cover!important;background-position:center!important}
+  .hero-bg.hero-bg-alt{background-image:url("../images/hero-alt.webp")!important}
+  .hero-inner{padding-top:22px!important;padding-bottom:56px!important}
+  .hero h1{font-size:2.1rem;line-height:1.12}
+  div:has(> .rc-cat){display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:4px!important}
+  .rc-cat .rc-catimg,.rc-cat .rc-catico{width:62px!important;height:62px!important}
+  .rc-cat{font-size:.8rem;text-align:center}
+  .rc-track li{font-size:.68rem}
+}
+
+/* ---- patch-mobile-hero2: phones use the laptop hero (text over photo) ---- */
+@media(max-width:759px){
+  .hero{display:flex!important;align-items:center!important;min-height:640px!important;padding-top:0!important}
+  .hero::after{display:block!important;content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(3,25,60,.55) 0%,rgba(3,25,60,.78) 55%,rgba(3,25,60,.92) 100%)!important}
+  .hero-bg,.hero-bg.hero-bg-alt{inset:0!important;height:auto!important;background-size:cover!important;background-position:72% center!important}
+  .hero-inner{padding-top:48px!important;padding-bottom:64px!important}
+  .hero h1{font-size:2.5rem!important;line-height:1.1!important;text-shadow:0 2px 18px rgba(3,25,60,.55)}
+  .hero-copy{max-width:100%}
+}
+
+/* ---- card buttons: medium (13 Nov) ---- */
+.card .variant{display:flex !important;flex-wrap:nowrap !important;align-items:center;gap:10px}
+.card .variant .btn,
+.card .variant .btn-small{
+  width:auto !important;flex:0 0 auto !important;
+  min-height:40px !important;padding:8px 22px !important;
+  font-size:.85rem !important;line-height:1.2;box-shadow:none
+}
+
+/* ---- keep product tops visible ---- */
+.card .card-media img{object-position:center top !important}
+
+/* ---- keep product tops visible ---- */
+.card .card-media img{object-position:center top !important}
+
+/* ==== UI v5 ==== */
+.card h3,.card h3 a{font-family:var(--sans);font-weight:800;font-size:1.25rem;text-transform:uppercase;letter-spacing:.01em;color:#0b1f4a}
+.card .eyebrow{font-weight:800;letter-spacing:.16em;color:#b07a0a}
+h2{font-weight:800;letter-spacing:-.02em}
+:has(> .card){align-items:start !important}
+.card{height:auto !important}
+.card-body{padding:16px 18px 18px !important}
+
+.card .variants .variant{display:grid !important;grid-template-columns:1fr auto;align-items:center;gap:8px 12px;padding:12px 0 !important}
+.card .variants .variant .price{font-size:1.05rem;font-weight:800;color:#14421f;white-space:nowrap}
+
+.card .variants .variant .btn{
+  grid-column:1 / -1;width:100% !important;min-height:42px !important;
+  display:inline-flex !important;flex-direction:row !important;align-items:center;justify-content:center;gap:8px;
+  padding:9px 14px !important;font-size:.9rem !important;font-weight:800;white-space:nowrap;
+  background:linear-gradient(180deg,#f6d36e,#d9a62e) !important;color:#0b1f4a !important;
+  border:0 !important;border-radius:12px !important;
+  box-shadow:0 8px 16px -8px rgba(170,120,10,.8),inset 0 1px 0 rgba(255,255,255,.55) !important}
+.card .variants .variant .btn::after,.card .variants .variant .btn::before{content:none !important}
+.card .variants .variant .btn svg{width:18px !important;height:18px !important;flex:none}
+.card .variants .variant .btn:hover{transform:translateY(-1px);filter:brightness(1.06) !important}
+.card .variants .variant .btn:disabled{background:#e4e0d2 !important;color:#7a7766 !important;box-shadow:none !important}
+
+@media (max-width:640px){
+  .card h3,.card h3 a{font-size:1.05rem}
+  .card-body{padding:14px 14px 16px !important}
+  .card .variants .variant .btn{min-height:46px !important;font-size:.85rem !important}
+}
+
+/* ==== UI v6 ==== */
+.hero-inner h1{font-weight:900;letter-spacing:-.03em}
+.hero-trust{list-style:none;margin:22px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.hero-trust li{display:inline-flex;align-items:center;gap:10px;padding:7px 16px 7px 7px;border-radius:999px;
+  background:rgba(7,22,52,.85);border:1px solid rgba(232,193,92,.7);color:#fff;font-weight:700;font-size:.9rem;
+  box-shadow:0 8px 20px -8px rgba(0,0,0,.6)}
+.ht-ico{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;flex:none;
+  background:linear-gradient(180deg,#f6d36e,#d9a62e);color:#0b1f4a}
+.ht-ico svg{width:18px;height:18px}
+@media (max-width:640px){
+  .hero-trust{gap:8px}
+  .hero-trust li{font-size:.78rem;padding:6px 12px 6px 6px;gap:8px}
+  .ht-ico{width:28px;height:28px}.ht-ico svg{width:16px;height:16px}
+}

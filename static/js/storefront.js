@@ -142,7 +142,7 @@
     var base=(document.querySelector('link[href*="storefront.css"]')||{}).href;
     if(!base) return;
     base=base.replace(/css\/storefront\.css.*$/,'images/cat/');
-    var map={'fresh milk':'milk.jpg','yoghurt':'yoghurt.jpg','yogurt':'yoghurt.jpg','butter':'butter.jpg'};
+    var map={'fresh milk':'milk.jpg','yoghurt':'yoghurt.jpg','yogurt':'yoghurt.jpg','butter':'butter.jpg','mala':'mala.jpg'};
     [].forEach.call(document.querySelectorAll('a[href*="/products/"]'),function(a){
       var label=(a.textContent||'').trim().toLowerCase();
       var file=map[label]; var svg=a.querySelector('svg');
