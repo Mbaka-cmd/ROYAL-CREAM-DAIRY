@@ -1,0 +1,24 @@
+<section class="panel wa-panel" id="wa-panel">
+  <h2>Customer communication</h2>
+  <div class="wa-grid">
+    <div><span class="wa-k">Customer</span><strong>{{ order.customer.name }}</strong></div>
+    <div><span class="wa-k">WhatsApp</span><strong class="wa-num">{% if phone %}+{{ phone }}{% else %}{{ raw_phone }}{% endif %}</strong></div>
+    <div><span class="wa-k">Consent</span><strong>{% if order.customer.whatsapp_opt_in %}Agreed{% else %}Not agreed{% endif %}</strong></div>
+    <div><span class="wa-k">Order status</span><span class="st st-{{ order.status|lower }}">{{ order.get_status_display }}</span></div>
+  </div>
+  {% if not phone %}
+    <p class="warn">Not a valid Kenyan number. Please correct it.</p>
+  {% elif not message %}
+    <p class="muted">No message for this status.</p>
+  {% else %}
+    <details class="wa-prev" open>
+      <summary>{{ title }} &middot; preview</summary>
+      <textarea id="wa-msg" readonly rows="8">{{ message }}</textarea>
+    </details>
+    <div class="wa-actions">
+      <a class="btn" href="{{ wa_url }}" target="_blank" rel="noopener"{% if order.status == "COMPLETED" %} data-wa-fwd="{{ order.pk }}"{% endif %}>Send via WhatsApp</a>
+      <button class="btn" type="button" data-wa-copy="#wa-msg">Copy message</button>
+      <a class="btn" href="{{ chat_url }}" target="_blank" rel="noopener">Open chat</a>
+    </div>
+  {% endif %}
+</section>

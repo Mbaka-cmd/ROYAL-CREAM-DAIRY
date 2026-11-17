@@ -26,3 +26,4 @@ MALA 1L.png
 *.sqlite3
 _backup*
 config/settings/tunnel.py
+_backup_*

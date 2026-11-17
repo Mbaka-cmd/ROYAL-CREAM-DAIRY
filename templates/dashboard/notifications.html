@@ -1,7 +1,10 @@
 {% extends "dashboard/base.html" %}
+{% load wa_tags %}
 {% block title %}WhatsApp messages{% endblock %}
 {% block content %}
 <h1>WhatsApp messages</h1>
+{% wa_queue %}
+
 <nav class="filters" aria-label="Filter">
   <a href="{% url 'owner_notifications' %}" class="chip{% if not active_status %} active{% endif %}">All</a>
   <a href="?status=review" class="chip{% if active_status == 'review' %} active{% endif %}">Need review</a>

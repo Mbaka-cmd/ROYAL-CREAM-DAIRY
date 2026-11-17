@@ -1,3 +1,4 @@
+{% load wa_tags %}
 {% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="{% static 'icons/favicon.svg' %}">
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'css/wa.css' %}">
 </head>
 <body class="dash">
   <header class="dash-header">
@@ -51,7 +53,7 @@
         {% if perms.orders.view_order %}<a href="{% url 'owner_orders' %}">Orders</a>{% endif %}
         {% if perms.inventory.view_inventory %}<a href="{% url 'owner_inventory' %}">Stock</a>{% endif %}
         {% if perms.catalogue.view_product %}<a href="{% url 'owner_products' %}">Products</a>{% endif %}
-        {% if perms.notifications.view_notification %}<a href="{% url 'owner_notifications' %}">Messages</a>{% endif %}
+        {% if perms.notifications.view_notification %}<a href="{% url 'owner_notifications' %}">Messages {% wa_alert %}</a>{% endif %}
         {% if perms.orders.view_order %}<a href="{% url 'owner_reports' %}">Reports</a>{% endif %}
       </div>
     </nav>
@@ -62,5 +64,6 @@
     {% block content %}{% endblock %}
   </main>
   <script src="{% static 'js/dashboard.js' %}" defer></script>
+  <script src="{% static 'js/wa.js' %}" defer></script>
 </body>
 </html>

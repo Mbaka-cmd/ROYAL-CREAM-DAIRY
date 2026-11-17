@@ -1,0 +1,42 @@
+.wa-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem 1.2rem;margin:.5rem 0 .9rem}
+@media(max-width:700px){.wa-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.wa-k{display:block;font-size:.72rem;color:#6b6b6b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
+.wa-num{font-size:1.05rem}
+.wa-prev{border:1px solid #e4ddcc;border-radius:10px;padding:.55rem .8rem;background:#fffdf8}
+.wa-prev summary{cursor:pointer;font-size:.85rem;color:#444;font-weight:600}
+.wa-prev textarea{display:block;width:100%;margin-top:.5rem;font:inherit;font-size:.9rem;padding:.6rem;border:1px solid #d8d2c4;border-radius:8px;background:#fff;resize:vertical}
+.wa-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem}
+.wa-badge{display:none;margin-left:.35rem;min-width:1.2rem;padding:0 .35rem;border-radius:999px;background:#c0392b;color:#fff;font-size:.72rem;font-weight:700;line-height:1.2rem;text-align:center;vertical-align:middle}
+.wa-badge.on{display:inline-block}
+.wa-toast{position:fixed;right:1.2rem;bottom:1.2rem;z-index:9999;max-width:340px;background:#031a3a;color:#fff;padding:1rem 1.1rem;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:.92rem}
+.wa-toast-row{margin-top:.7rem;display:flex;gap:.6rem;align-items:center}
+.wa-toast a{background:#c9a24a;color:#031a3a;padding:.4rem .8rem;border-radius:999px;font-weight:700;text-decoration:none}
+.wa-toast button{background:none;border:0;color:#cfd6e4;cursor:pointer}
+.wa-queue .wa-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) auto;gap:.4rem 1rem;align-items:center;padding:.7rem 0;border-top:1px solid #ece6d6}
+.wa-row .wa-prev2{grid-column:1/-1}
+.wa-prev2 summary{cursor:pointer;font-size:.82rem;color:#555}
+.wa-prev2 textarea{display:block;width:100%;margin-top:.4rem;font:inherit;font-size:.9rem;padding:.6rem;border:1px solid #d8d2c4;border-radius:8px;background:#fffdf8;resize:vertical}
+.wa-btns{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}
+.wa-row.done{opacity:.55}
+.wa-done{display:none;font-size:.75rem;color:#2e7d32;font-weight:600;margin-left:.4rem}
+.wa-row.done .wa-done{display:inline}
+.wa-off{opacity:.5;cursor:not-allowed}
+@media(max-width:700px){.wa-queue .wa-row{grid-template-columns:1fr}.wa-btns{justify-content:flex-start}}
+/* MOBILE POLISH */
+.wa-queue,.wa-queue *{box-sizing:border-box}
+.wa-queue button,.wa-queue textarea,.wa-queue .btn,.wa-toast,.wa-toast a,.wa-toast button{font-family:inherit}
+.wa-queue .btn{min-height:2.4rem;display:inline-flex;align-items:center;justify-content:center}
+.wa-queue h2{margin-bottom:.4rem}
+.wa-info{line-height:1.5}
+@media(max-width:700px){
+  .wa-queue{padding-left:1rem;padding-right:1rem}
+  .wa-queue .wa-row{grid-template-columns:1fr;gap:.55rem;padding:1rem 0}
+  .wa-queue .wa-btns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;justify-content:stretch}
+  .wa-queue .wa-btns .btn{width:100%;min-height:2.8rem}
+  .wa-queue .wa-btns .btn:first-child:nth-last-child(3){grid-column:1 / -1}
+  .wa-queue .wa-btns .wa-off{grid-column:1 / -1}
+  .wa-prev2 textarea{font-size:16px;min-height:11rem}
+  .wa-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem 1rem}
+  .wa-toast{left:.8rem;right:.8rem;bottom:.8rem;max-width:none}
+  .wa-toast-row{flex-wrap:wrap}
+}

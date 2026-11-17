@@ -1,0 +1,29 @@
+<section class="panel wa-queue" id="wa-queue">
+  <h2>Send to customers <span class="muted small">({{ items|length }})</span></h2>
+  {% for it in items %}
+  <div class="wa-row" data-wa-key="{{ it.key }}">
+    <div class="wa-info">
+      <a href="{% url 'owner_order_detail' it.order.pk %}"><strong>{{ it.order.reference }}</strong></a>
+      <span class="st st-{{ it.order.status|lower }}">{{ it.order.get_status_display }}</span>
+      <span class="wa-done">Opened in WhatsApp</span><br>
+      <span class="muted small">{{ it.order.customer.name }} &middot; {% if it.phone %}+{{ it.phone }}{% else %}{{ it.raw_phone }}{% endif %} &middot; {% if it.consent %}consent agreed{% else %}no consent{% endif %}</span>
+    </div>
+    <div class="small">{{ it.title }}</div>
+    <div class="wa-btns">
+      {% if not it.phone %}<span class="btn btn-small wa-off">Invalid number</span>
+      {% elif not it.consent %}<span class="btn btn-small wa-off">No consent</span>
+      {% else %}
+      <a class="btn btn-small" href="{{ it.wa_url }}" target="_blank" rel="noopener" data-wa-fwd="{{ it.key }}">Send via WhatsApp</a>
+      <button class="btn btn-small" type="button" data-wa-copy="#wa-msg-{{ it.order.pk }}">Copy</button>
+      <a class="btn btn-small" href="{{ it.chat_url }}" target="_blank" rel="noopener">Chat</a>
+      {% endif %}
+    </div>
+    <details class="wa-prev2">
+      <summary>Preview message</summary>
+      <textarea id="wa-msg-{{ it.order.pk }}" readonly rows="7">{{ it.message }}</textarea>
+    </details>
+  </div>
+  {% empty %}
+  <p class="muted">No orders waiting for a WhatsApp update.</p>
+  {% endfor %}
+</section>

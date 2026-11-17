@@ -1,4 +1,5 @@
 {% extends "dashboard/base.html" %}
+{% load wa_tags %}
 {% block title %}Order {{ order.reference }}{% endblock %}
 {% block content %}
 <p><a href="{% url 'owner_orders' %}">&larr; All orders</a></p>
@@ -58,6 +59,8 @@
   {% endif %}
 </section>
 {% endif %}
+
+<p><a class="btn btn-small" href="/owner/notifications/#wa-queue">Message customer on WhatsApp</a></p>
 
 <section class="panel">
   <h2>History</h2>
